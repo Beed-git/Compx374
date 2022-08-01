@@ -156,10 +156,9 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
   // Virtual object (ARCore pawn)
   private Mesh virtualObjectMesh;
   private Shader virtualObjectShader;
-  private Texture virtualObjectAlbedoTexture;
-  private Texture virtualObjectAlbedoInstantPlacementTexture;
+  private Texture virtualObjectTexture;
 
-  private final List<WrappedAnchor> wrappedAnchors = new ArrayList<>();
+  private WrappedAnchor wrappedAnchor;
 
   // Environmental HDR
   private Texture dfgTexture;
@@ -396,27 +395,15 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
           new Mesh(
               render, Mesh.PrimitiveMode.POINTS, /*indexBuffer=*/ null, pointCloudVertexBuffers);
 
-      // Virtual object to render (ARCore pawn)
-      virtualObjectAlbedoTexture =
+      // Virtual object to render (plane)
+      virtualObjectTexture =
           Texture.createFromAsset(
               render,
-              "models/pawn_albedo.png",
+              "models/test_image.png",
               Texture.WrapMode.CLAMP_TO_EDGE,
               Texture.ColorFormat.SRGB);
-      virtualObjectAlbedoInstantPlacementTexture =
-          Texture.createFromAsset(
-              render,
-              "models/pawn_albedo_instant_placement.png",
-              Texture.WrapMode.CLAMP_TO_EDGE,
-              Texture.ColorFormat.SRGB);
-      Texture virtualObjectPbrTexture =
-          Texture.createFromAsset(
-              render,
-              "models/pawn_roughness_metallic_ao.png",
-              Texture.WrapMode.CLAMP_TO_EDGE,
-              Texture.ColorFormat.LINEAR);
 
-      virtualObjectMesh = Mesh.createFromAsset(render, "models/pawn.obj");
+      virtualObjectMesh = Mesh.createFromAsset(render, "models/plane.obj");
       virtualObjectShader =
           Shader.createFromAssets(
                   render,
@@ -429,8 +416,7 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
                           Integer.toString(cubemapFilter.getNumberOfMipmapLevels()));
                     }
                   })
-              .setTexture("u_AlbedoTexture", virtualObjectAlbedoTexture)
-              .setTexture("u_RoughnessMetallicAmbientOcclusionTexture", virtualObjectPbrTexture)
+              .setTexture("u_AlbedoTexture", virtualObjectTexture)
               .setTexture("u_Cubemap", cubemapFilter.getFilteredCubemapTexture())
               .setTexture("u_DfgTexture", dfgTexture);
     } catch (IOException e) {
@@ -520,7 +506,7 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
         message = TrackingStateHelper.getTrackingFailureReasonString(camera);
       }
     } else if (hasTrackingPlane()) {
-      if (wrappedAnchors.isEmpty()) {
+      if (wrappedAnchor == null) {
         message = WAITING_FOR_TAP_MESSAGE;
       }
     } else {
@@ -579,35 +565,26 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
 
     // Visualize anchors created by touch.
     render.clear(virtualSceneFramebuffer, 0f, 0f, 0f, 0f);
-    for (WrappedAnchor wrappedAnchor : wrappedAnchors) {
+
+    if (wrappedAnchor != null) {
       Anchor anchor = wrappedAnchor.getAnchor();
       Trackable trackable = wrappedAnchor.getTrackable();
-      if (anchor.getTrackingState() != TrackingState.TRACKING) {
-        continue;
+      if (anchor.getTrackingState() == TrackingState.TRACKING) {
+
+        // Get the current pose of an Anchor in world space. The Anchor pose is updated
+        // during calls to session.update() as ARCore refines its estimate of the world.
+        anchor.getPose().toMatrix(modelMatrix, 0);
+
+        // Calculate model/view/projection matrices
+        Matrix.multiplyMM(modelViewMatrix, 0, viewMatrix, 0, modelMatrix, 0);
+        Matrix.multiplyMM(modelViewProjectionMatrix, 0, projectionMatrix, 0, modelViewMatrix, 0);
+
+        // Update shader properties and draw
+        virtualObjectShader.setMat4("u_ModelView", modelViewMatrix);
+        virtualObjectShader.setMat4("u_ModelViewProjection", modelViewProjectionMatrix);
+
+        render.draw(virtualObjectMesh, virtualObjectShader, virtualSceneFramebuffer);
       }
-
-      // Get the current pose of an Anchor in world space. The Anchor pose is updated
-      // during calls to session.update() as ARCore refines its estimate of the world.
-      anchor.getPose().toMatrix(modelMatrix, 0);
-
-      // Calculate model/view/projection matrices
-      Matrix.multiplyMM(modelViewMatrix, 0, viewMatrix, 0, modelMatrix, 0);
-      Matrix.multiplyMM(modelViewProjectionMatrix, 0, projectionMatrix, 0, modelViewMatrix, 0);
-
-      // Update shader properties and draw
-      virtualObjectShader.setMat4("u_ModelView", modelViewMatrix);
-      virtualObjectShader.setMat4("u_ModelViewProjection", modelViewProjectionMatrix);
-
-      if (trackable instanceof InstantPlacementPoint
-          && ((InstantPlacementPoint) trackable).getTrackingMethod()
-              == InstantPlacementPoint.TrackingMethod.SCREENSPACE_WITH_APPROXIMATE_DISTANCE) {
-        virtualObjectShader.setTexture(
-            "u_AlbedoTexture", virtualObjectAlbedoInstantPlacementTexture);
-      } else {
-        virtualObjectShader.setTexture("u_AlbedoTexture", virtualObjectAlbedoTexture);
-      }
-
-      render.draw(virtualObjectMesh, virtualObjectShader, virtualSceneFramebuffer);
     }
 
     // Compose the virtual scene with the background.
@@ -638,17 +615,11 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
                     == OrientationMode.ESTIMATED_SURFACE_NORMAL)
             || (trackable instanceof InstantPlacementPoint)
             || (trackable instanceof DepthPoint)) {
-          // Cap the number of objects created. This avoids overloading both the
-          // rendering system and ARCore.
-          if (wrappedAnchors.size() >= 20) {
-            wrappedAnchors.get(0).getAnchor().detach();
-            wrappedAnchors.remove(0);
-          }
 
           // Adding an Anchor tells ARCore that it should track this position in
           // space. This anchor is created on the Plane to place the 3D model
           // in the correct position relative both to the world and to the plane.
-          wrappedAnchors.add(new WrappedAnchor(hit.createAnchor(), trackable));
+          this.wrappedAnchor = new WrappedAnchor(hit.createAnchor(), trackable);
           // For devices that support the Depth API, shows a dialog to suggest enabling
           // depth-based occlusion. This dialog needs to be spawned on the UI thread.
           this.runOnUiThread(this::showOcclusionDialogIfNeeded);
