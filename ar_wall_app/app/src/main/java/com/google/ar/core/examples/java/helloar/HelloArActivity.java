@@ -46,6 +46,7 @@ import com.google.ar.core.Plane;
 import com.google.ar.core.Point;
 import com.google.ar.core.Point.OrientationMode;
 import com.google.ar.core.PointCloud;
+import com.google.ar.core.Pose;
 import com.google.ar.core.Session;
 import com.google.ar.core.Trackable;
 import com.google.ar.core.TrackingFailureReason;
@@ -158,7 +159,8 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
   private Shader virtualObjectShader;
   private Texture virtualObjectTexture;
 
-  private WrappedAnchor wrappedAnchor;
+  private WrappedAnchor firstWrappedAnchor;
+  private WrappedAnchor secondWrappedAnchor;
 
   // Environmental HDR
   private Texture dfgTexture;
@@ -506,7 +508,7 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
         message = TrackingStateHelper.getTrackingFailureReasonString(camera);
       }
     } else if (hasTrackingPlane()) {
-      if (wrappedAnchor == null) {
+      if (firstWrappedAnchor == null || secondWrappedAnchor == null) {
         message = WAITING_FOR_TAP_MESSAGE;
       }
     } else {
@@ -566,14 +568,18 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
     // Visualize anchors created by touch.
     render.clear(virtualSceneFramebuffer, 0f, 0f, 0f, 0f);
 
-    if (wrappedAnchor != null) {
-      Anchor anchor = wrappedAnchor.getAnchor();
-      Trackable trackable = wrappedAnchor.getTrackable();
-      if (anchor.getTrackingState() == TrackingState.TRACKING) {
+    if (firstWrappedAnchor != null && secondWrappedAnchor != null) {
+      Anchor first = this.firstWrappedAnchor.getAnchor();
+      Anchor second = this.secondWrappedAnchor.getAnchor();
+
+      if (first.getTrackingState() == TrackingState.TRACKING &&
+          second.getTrackingState() == TrackingState.TRACKING) {
+
+        Pose pose = Pose.makeInterpolated(first.getPose(), second.getPose(), 0.5f);
 
         // Get the current pose of an Anchor in world space. The Anchor pose is updated
         // during calls to session.update() as ARCore refines its estimate of the world.
-        anchor.getPose().toMatrix(modelMatrix, 0);
+        pose.toMatrix(modelMatrix, 0);
 
         // Calculate model/view/projection matrices
         Matrix.multiplyMM(modelViewMatrix, 0, viewMatrix, 0, modelMatrix, 0);
@@ -619,7 +625,17 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
           // Adding an Anchor tells ARCore that it should track this position in
           // space. This anchor is created on the Plane to place the 3D model
           // in the correct position relative both to the world and to the plane.
-          this.wrappedAnchor = new WrappedAnchor(hit.createAnchor(), trackable);
+          if (this.firstWrappedAnchor == null) {
+            this.firstWrappedAnchor = new WrappedAnchor(hit.createAnchor(), trackable);
+          }
+          else if (this.secondWrappedAnchor == null) {
+            this.secondWrappedAnchor = new WrappedAnchor(hit.createAnchor(), trackable);
+          }
+          else {
+            this.firstWrappedAnchor = null;
+            this.secondWrappedAnchor = null;
+          }
+
           // For devices that support the Depth API, shows a dialog to suggest enabling
           // depth-based occlusion. This dialog needs to be spawned on the UI thread.
           this.runOnUiThread(this::showOcclusionDialogIfNeeded);
