@@ -632,6 +632,9 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
             this.secondWrappedAnchor = new WrappedAnchor(hit.createAnchor(), trackable);
           }
           else {
+            this.firstWrappedAnchor.getAnchor().detach();
+            this.secondWrappedAnchor.getAnchor().detach();
+
             this.firstWrappedAnchor = null;
             this.secondWrappedAnchor = null;
           }
