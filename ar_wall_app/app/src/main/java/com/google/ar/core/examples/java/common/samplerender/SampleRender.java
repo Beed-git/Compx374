@@ -124,8 +124,7 @@ public class SampleRender {
     public void onDrawFrame(SampleRender render);
   }
 
-  /* package-private */
-  AssetManager getAssets() {
+  public AssetManager getAssets() {
     return assetManager;
   }
 

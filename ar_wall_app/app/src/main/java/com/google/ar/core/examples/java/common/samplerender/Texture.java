@@ -20,6 +20,9 @@ import android.graphics.BitmapFactory;
 import android.opengl.GLES11Ext;
 import android.opengl.GLES30;
 import android.util.Log;
+
+import com.google.ar.core.examples.java.common.rendering.ImageBuffer;
+
 import java.io.Closeable;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -30,6 +33,9 @@ public class Texture implements Closeable {
 
   private final int[] textureId = {0};
   private final Target target;
+
+  private int width;
+  private int height;
 
   /**
    * Describes the way the texture's edges are rendered.
@@ -43,9 +49,9 @@ public class Texture implements Closeable {
     REPEAT(GLES30.GL_REPEAT);
 
     /* package-private */
-    final int glesEnum;
+    public final int glesEnum;
 
-    private WrapMode(int glesEnum) {
+    WrapMode(int glesEnum) {
       this.glesEnum = glesEnum;
     }
   }
@@ -61,9 +67,9 @@ public class Texture implements Closeable {
     TEXTURE_EXTERNAL_OES(GLES11Ext.GL_TEXTURE_EXTERNAL_OES),
     TEXTURE_CUBE_MAP(GLES30.GL_TEXTURE_CUBE_MAP);
 
-    final int glesEnum;
+    public final int glesEnum;
 
-    private Target(int glesEnum) {
+    Target(int glesEnum) {
       this.glesEnum = glesEnum;
     }
   }
@@ -78,9 +84,9 @@ public class Texture implements Closeable {
     LINEAR(GLES30.GL_RGBA8),
     SRGB(GLES30.GL_SRGB8_ALPHA8);
 
-    final int glesEnum;
+    public final int glesEnum;
 
-    private ColorFormat(int glesEnum) {
+    ColorFormat(int glesEnum) {
       this.glesEnum = glesEnum;
     }
   }
@@ -127,20 +133,14 @@ public class Texture implements Closeable {
       SampleRender render, String assetFileName, WrapMode wrapMode, ColorFormat colorFormat)
       throws IOException {
     Texture texture = new Texture(render, Target.TEXTURE_2D, wrapMode);
-    Bitmap bitmap = null;
     try {
       // The following lines up to glTexImage2D could technically be replaced with
       // GLUtils.texImage2d, but this method does not allow for loading sRGB images.
 
-      // Load and convert the bitmap and copy its contents to a direct ByteBuffer. Despite its name,
-      // the ARGB_8888 config is actually stored in RGBA order.
-      bitmap =
-          convertBitmapToConfig(
-              BitmapFactory.decodeStream(render.getAssets().open(assetFileName)),
-              Bitmap.Config.ARGB_8888);
-      ByteBuffer buffer = ByteBuffer.allocateDirect(bitmap.getByteCount());
-      bitmap.copyPixelsToBuffer(buffer);
-      buffer.rewind();
+      ImageBuffer image = ImageBuffer.fromBitmap(render, assetFileName);
+
+      texture.width = image.getWidth();
+      texture.height = image.getHeight();
 
       GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, texture.getTextureId());
       GLError.maybeThrowGLException("Failed to bind texture", "glBindTexture");
@@ -148,22 +148,18 @@ public class Texture implements Closeable {
           GLES30.GL_TEXTURE_2D,
           /*level=*/ 0,
           colorFormat.glesEnum,
-          bitmap.getWidth(),
-          bitmap.getHeight(),
+          image.getWidth(),
+          image.getHeight(),
           /*border=*/ 0,
           GLES30.GL_RGBA,
           GLES30.GL_UNSIGNED_BYTE,
-          buffer);
+          image.getBuffer());
       GLError.maybeThrowGLException("Failed to populate texture data", "glTexImage2D");
       GLES30.glGenerateMipmap(GLES30.GL_TEXTURE_2D);
       GLError.maybeThrowGLException("Failed to generate mipmaps", "glGenerateMipmap");
     } catch (Throwable t) {
       texture.close();
       throw t;
-    } finally {
-      if (bitmap != null) {
-        bitmap.recycle();
-      }
     }
     return texture;
   }
@@ -177,6 +173,14 @@ public class Texture implements Closeable {
     }
   }
 
+  public int getHeight() {
+    return height;
+  }
+
+  public int getWidth() {
+    return width;
+  }
+
   /** Retrieve the native texture ID. */
   public int getTextureId() {
     return textureId[0];
@@ -185,16 +189,5 @@ public class Texture implements Closeable {
   /* package-private */
   Target getTarget() {
     return target;
-  }
-
-  private static Bitmap convertBitmapToConfig(Bitmap bitmap, Bitmap.Config config) {
-    // We use this method instead of BitmapFactory.Options.outConfig to support a minimum of Android
-    // API level 24.
-    if (bitmap.getConfig() == config) {
-      return bitmap;
-    }
-    Bitmap result = bitmap.copy(config, /*isMutable=*/ false);
-    bitmap.recycle();
-    return result;
   }
 }

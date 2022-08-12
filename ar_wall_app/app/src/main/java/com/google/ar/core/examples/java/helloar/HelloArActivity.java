@@ -59,6 +59,7 @@ import com.google.ar.core.examples.java.common.helpers.InstantPlacementSettings;
 import com.google.ar.core.examples.java.common.helpers.SnackbarHelper;
 import com.google.ar.core.examples.java.common.helpers.TapHelper;
 import com.google.ar.core.examples.java.common.helpers.TrackingStateHelper;
+import com.google.ar.core.examples.java.common.rendering.AnimatedTexture;
 import com.google.ar.core.examples.java.common.samplerender.Framebuffer;
 import com.google.ar.core.examples.java.common.samplerender.GLError;
 import com.google.ar.core.examples.java.common.samplerender.Mesh;
@@ -158,6 +159,7 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
   private Mesh virtualObjectMesh;
   private Shader virtualObjectShader;
   private Texture virtualObjectTexture;
+  private AnimatedTexture virtualObjectAnimatedTexture;
 
   private WrappedAnchor firstWrappedAnchor;
   private WrappedAnchor secondWrappedAnchor;
@@ -405,6 +407,8 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
               Texture.WrapMode.CLAMP_TO_EDGE,
               Texture.ColorFormat.SRGB);
 
+      virtualObjectAnimatedTexture = new AnimatedTexture(render, "models/imagesequence", Texture.ColorFormat.SRGB);
+
       virtualObjectMesh = Mesh.createFromAsset(render, "models/plane.obj");
       virtualObjectShader =
           Shader.createFromAssets(
@@ -418,7 +422,8 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
                           Integer.toString(cubemapFilter.getNumberOfMipmapLevels()));
                     }
                   })
-              .setTexture("u_AlbedoTexture", virtualObjectTexture)
+              //.setTexture("u_AlbedoTexture", virtualObjectTexture)
+              .setTexture("u_AlbedoTexture", virtualObjectAnimatedTexture.getTexture())
               .setTexture("u_Cubemap", cubemapFilter.getFilteredCubemapTexture())
               .setTexture("u_DfgTexture", dfgTexture);
     } catch (IOException e) {
@@ -588,6 +593,11 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
         // Update shader properties and draw
         virtualObjectShader.setMat4("u_ModelView", modelViewMatrix);
         virtualObjectShader.setMat4("u_ModelViewProjection", modelViewProjectionMatrix);
+
+        if (virtualObjectAnimatedTexture != null) {
+          virtualObjectAnimatedTexture.nextFrame();
+          virtualObjectShader.setTexture("u_AlbedoTexture", virtualObjectAnimatedTexture.getTexture());
+        }
 
         render.draw(virtualObjectMesh, virtualObjectShader, virtualSceneFramebuffer);
       }
