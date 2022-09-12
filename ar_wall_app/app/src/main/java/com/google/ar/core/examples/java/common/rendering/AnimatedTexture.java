@@ -1,29 +1,24 @@
 package com.google.ar.core.examples.java.common.rendering;
 
-import android.opengl.GLES20;
-import android.opengl.GLES30;
-
-import com.google.ar.core.examples.java.common.samplerender.GLError;
 import com.google.ar.core.examples.java.common.samplerender.SampleRender;
 import com.google.ar.core.examples.java.common.samplerender.Texture;
 
-import java.io.Closeable;
 import java.io.IOException;
 
-public class AnimatedTexture implements Closeable {
+public class AnimatedTexture implements ITexture {
     private final SampleRender render;
-    private final Texture.ColorFormat colorFormat;
-    private Texture texture;
+
+    private ImageTexture imageTexture;
 
     private int frame = 0;
     private String[] assets;
 
     public AnimatedTexture(SampleRender render, String assetFolder, Texture.ColorFormat colorFormat) {
         this.render = render;
-        this.colorFormat = colorFormat;
         try {
             this.assets = getAssetNames(render, assetFolder);
-            this.texture = Texture.createFromAsset(render, assets[0], Texture.WrapMode.REPEAT, colorFormat);
+            this.imageTexture = ImageTexture.createFromAsset(render, assets[0]);
+
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -38,41 +33,33 @@ public class AnimatedTexture implements Closeable {
         return paths;
     }
 
+    @Override
+    public int getTextureId() {
+        return this.imageTexture.getTextureId();
+    }
+
+    @Override
+    public void bind() {
+        this.imageTexture.bind();
+    }
+
+
     public void nextFrame() {
         // Get the next frame in the folder.
         frame = (frame + 1) % assets.length;
         String asset = assets[frame];
         try {
-            this.texture.close();
-            this.texture = Texture.createFromAsset(this.render, asset, Texture.WrapMode.REPEAT, colorFormat);
-
             // Load the asset, then update the texture with the data from the asset.
-            //ImageBuffer image = ImageBuffer.fromBitmap(render, asset);
-            //GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, texture.getTextureId());
-            //GLError.maybeThrowGLException("Failed to bind texture", "glBindTexture");
+            ImageBuffer image = ImageBuffer.fromBitmap(render, asset);
+            imageTexture.setData(image.getWidth(), image.getHeight(), image.getBuffer());
 
-            //GLES30.glTexSubImage2D(
-            //        GLES30.GL_TEXTURE_2D,
-            //        0,
-            //        colorFormat.glesEnum,
-            //        image.getWidth(),
-            //        image.getHeight(),
-            //        0,
-            //        GLES30.GL_RGBA,
-            //        GLES30.GL_UNSIGNED_BYTE,
-            //        image.getBuffer());
-            //GLError.maybeThrowGLException("Failed to update texture data", "glTexSubImage2D");
         } catch (IOException ex) {
             ex.printStackTrace();
         }
     }
 
-    public Texture getTexture() {
-        return this.texture;
-    }
-
     @Override
     public void close() {
-        texture.close();
+        imageTexture.close();
     }
 }

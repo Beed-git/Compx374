@@ -21,6 +21,9 @@ import android.content.res.AssetManager;
 import android.opengl.GLES30;
 import android.opengl.GLException;
 import android.util.Log;
+
+import com.google.ar.core.examples.java.common.rendering.ITexture;
+
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
@@ -220,7 +223,7 @@ public class Shader implements Closeable {
   }
 
   /** Sets a texture uniform. */
-  public Shader setTexture(String name, Texture texture) {
+  public Shader setTexture(String name, ITexture texture) {
     // Special handling for Textures. If replacing an existing texture uniform, reuse the texture
     // unit.
     int location = getUniformLocation(name);
@@ -439,9 +442,9 @@ public class Shader implements Closeable {
 
   private static class UniformTexture implements Uniform {
     private final int textureUnit;
-    private final Texture texture;
+    private final ITexture texture;
 
-    public UniformTexture(int textureUnit, Texture texture) {
+    public UniformTexture(int textureUnit, ITexture texture) {
       this.textureUnit = textureUnit;
       this.texture = texture;
     }
@@ -457,8 +460,7 @@ public class Shader implements Closeable {
       }
       GLES30.glActiveTexture(GLES30.GL_TEXTURE0 + textureUnit);
       GLError.maybeThrowGLException("Failed to set active texture", "glActiveTexture");
-      GLES30.glBindTexture(texture.getTarget().glesEnum, texture.getTextureId());
-      GLError.maybeThrowGLException("Failed to bind texture", "glBindTexture");
+      texture.bind();
       GLES30.glUniform1i(location, textureUnit);
       GLError.maybeThrowGLException("Failed to set shader texture uniform", "glUniform1i");
     }

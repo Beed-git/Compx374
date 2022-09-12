@@ -423,7 +423,7 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
                     }
                   })
               //.setTexture("u_AlbedoTexture", virtualObjectTexture)
-              .setTexture("u_AlbedoTexture", virtualObjectAnimatedTexture.getTexture())
+              .setTexture("u_AlbedoTexture", virtualObjectAnimatedTexture)
               .setTexture("u_Cubemap", cubemapFilter.getFilteredCubemapTexture())
               .setTexture("u_DfgTexture", dfgTexture);
     } catch (IOException e) {
@@ -596,7 +596,7 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
 
         if (virtualObjectAnimatedTexture != null) {
           virtualObjectAnimatedTexture.nextFrame();
-          virtualObjectShader.setTexture("u_AlbedoTexture", virtualObjectAnimatedTexture.getTexture());
+          virtualObjectShader.setTexture("u_AlbedoTexture", virtualObjectAnimatedTexture);
         }
 
         render.draw(virtualObjectMesh, virtualObjectShader, virtualSceneFramebuffer);

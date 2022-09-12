@@ -21,6 +21,7 @@ import android.opengl.GLES11Ext;
 import android.opengl.GLES30;
 import android.util.Log;
 
+import com.google.ar.core.examples.java.common.rendering.ITexture;
 import com.google.ar.core.examples.java.common.rendering.ImageBuffer;
 
 import java.io.Closeable;
@@ -28,7 +29,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 
 /** A GPU-side texture. */
-public class Texture implements Closeable {
+public class Texture implements ITexture {
   private static final String TAG = Texture.class.getSimpleName();
 
   private final int[] textureId = {0};
@@ -95,7 +96,7 @@ public class Texture implements Closeable {
    * Construct an empty {@link Texture}.
    *
    * <p>Since {@link Texture}s created in this way are not populated with data, this method is
-   * mostly only useful for creating {@link Target.TEXTURE_EXTERNAL_OES} textures. See {@link
+   * mostly only useful for creating TEXTURE_EXTERNAL_OES textures. See {@link
    * #createFromAsset} if you want a texture with data.
    */
   public Texture(SampleRender render, Target target, WrapMode wrapMode) {
@@ -182,8 +183,15 @@ public class Texture implements Closeable {
   }
 
   /** Retrieve the native texture ID. */
+  @Override
   public int getTextureId() {
     return textureId[0];
+  }
+
+  @Override
+  public void bind() {
+    GLES30.glBindTexture(target.glesEnum, textureId[0]);
+    GLError.maybeThrowGLException("Failed to bind texture", "glBindTexture");
   }
 
   /* package-private */
