@@ -31,4 +31,7 @@
     <item>Enable Instant Placement</item>
   </string-array>
 
+  <string name="buttonGuestEnter">Enter as guest</string>
+  <string name="buttonLogin">Login</string>
+
 </resources>
