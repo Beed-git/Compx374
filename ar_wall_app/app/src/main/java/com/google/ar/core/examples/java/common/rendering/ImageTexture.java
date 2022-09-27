@@ -72,6 +72,16 @@ public class ImageTexture implements ITexture {
     }
 
     @Override
+    public int getWidth() {
+        return this.width;
+    }
+
+    @Override
+    public int getHeight() {
+        return this.height;
+    }
+
+    @Override
     public void bind() {
         GLES30.glBindTexture(target, getTextureId());
         GLError.maybeThrowGLException("Failed to bind texture", "glBindTexture");

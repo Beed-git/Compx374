@@ -15,8 +15,6 @@
  */
 package com.google.ar.core.examples.java.common.samplerender;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.opengl.GLES11Ext;
 import android.opengl.GLES30;
 import android.util.Log;
@@ -24,9 +22,7 @@ import android.util.Log;
 import com.google.ar.core.examples.java.common.rendering.ITexture;
 import com.google.ar.core.examples.java.common.rendering.ImageBuffer;
 
-import java.io.Closeable;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 
 /** A GPU-side texture. */
 public class Texture implements ITexture {
@@ -166,36 +162,33 @@ public class Texture implements ITexture {
   }
 
   @Override
+  public int getHeight() {
+    return this.height;
+  }
+
+  @Override
+  public int getWidth() {
+    return this.width;
+  }
+
+  /** Retrieve the native texture ID. */
+  @Override
+  public int getTextureId() {
+    return this.textureId[0];
+  }
+
+  @Override
+  public void bind() {
+    GLES30.glBindTexture(this.target.glesEnum, this.textureId[0]);
+    GLError.maybeThrowGLException("Failed to bind texture", "glBindTexture");
+  }
+
+  @Override
   public void close() {
     if (textureId[0] != 0) {
       GLES30.glDeleteTextures(1, textureId, 0);
       GLError.maybeLogGLError(Log.WARN, TAG, "Failed to free texture", "glDeleteTextures");
       textureId[0] = 0;
     }
-  }
-
-  public int getHeight() {
-    return height;
-  }
-
-  public int getWidth() {
-    return width;
-  }
-
-  /** Retrieve the native texture ID. */
-  @Override
-  public int getTextureId() {
-    return textureId[0];
-  }
-
-  @Override
-  public void bind() {
-    GLES30.glBindTexture(target.glesEnum, textureId[0]);
-    GLError.maybeThrowGLException("Failed to bind texture", "glBindTexture");
-  }
-
-  /* package-private */
-  Target getTarget() {
-    return target;
   }
 }

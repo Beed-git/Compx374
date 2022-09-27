@@ -34,6 +34,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.ar.core.Anchor;
 import com.google.ar.core.ArCoreApk;
+import com.google.ar.core.AugmentedImage;
+import com.google.ar.core.AugmentedImageDatabase;
 import com.google.ar.core.Camera;
 import com.google.ar.core.Config;
 import com.google.ar.core.Config.InstantPlacementMode;
@@ -45,7 +47,6 @@ import com.google.ar.core.LightEstimate;
 import com.google.ar.core.Plane;
 import com.google.ar.core.Point;
 import com.google.ar.core.Point.OrientationMode;
-import com.google.ar.core.PointCloud;
 import com.google.ar.core.Pose;
 import com.google.ar.core.Session;
 import com.google.ar.core.Trackable;
@@ -66,7 +67,6 @@ import com.google.ar.core.examples.java.common.samplerender.Mesh;
 import com.google.ar.core.examples.java.common.samplerender.SampleRender;
 import com.google.ar.core.examples.java.common.samplerender.Shader;
 import com.google.ar.core.examples.java.common.samplerender.Texture;
-import com.google.ar.core.examples.java.common.samplerender.VertexBuffer;
 import com.google.ar.core.examples.java.common.samplerender.arcore.BackgroundRenderer;
 import com.google.ar.core.examples.java.common.samplerender.arcore.PlaneRenderer;
 import com.google.ar.core.examples.java.common.samplerender.arcore.SpecularCubemapFilter;
@@ -80,6 +80,7 @@ import com.google.ar.core.exceptions.UnavailableUserDeclinedInstallationExceptio
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -93,7 +94,8 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
   private static final String TAG = HelloArActivity.class.getSimpleName();
 
   private static final String SEARCHING_PLANE_MESSAGE = "Searching for surfaces...";
-  private static final String WAITING_FOR_TAP_MESSAGE = "Tap on a surface to place an object.";
+  private static final String SEARCHING_FOR_TOP_RIGHT_MESSAGE = "Searching for top right marker...";
+  private static final String SEARCHING_FOR_BOTTOM_LEFT_MESSAGE = "Searching for bottom left marker...";
 
   // See the definition of updateSphericalHarmonicsCoefficients for an explanation of these
   // constants.
@@ -127,7 +129,6 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
   private TapHelper tapHelper;
   private SampleRender render;
 
-  private PlaneRenderer planeRenderer;
   private BackgroundRenderer backgroundRenderer;
   private Framebuffer virtualSceneFramebuffer;
   private boolean hasSetTextureNames = false;
@@ -146,28 +147,23 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
   // place an object on the ground or floor in front of them.
   private static final float APPROXIMATE_DISTANCE_METERS = 2.0f;
 
-  // Point Cloud
-  private VertexBuffer pointCloudVertexBuffer;
-  private Mesh pointCloudMesh;
-  private Shader pointCloudShader;
-  // Keep track of the last point cloud rendered to avoid updating the VBO if point cloud
-  // was not changed.  Do this using the timestamp since we can't compare PointCloud objects.
-  private long lastPointCloudTimestamp = 0;
-
-  // Virtual object (ARCore pawn)
+  // Virtual object
   private Mesh virtualObjectMesh;
   private Shader virtualObjectShader;
   private Texture virtualObjectTexture;
   private AnimatedTexture virtualObjectAnimatedTexture;
 
-  private WrappedAnchor firstWrappedAnchor;
-  private WrappedAnchor secondWrappedAnchor;
+  private AugmentedImageDatabase imageDatabase;
 
   // Environmental HDR
   private Texture dfgTexture;
   private SpecularCubemapFilter cubemapFilter;
 
+  private Pose firstPointPose = null;
+  private Pose secondPointPose = null;
+
   // Temporary matrix allocated here to reduce number of allocations for each frame.
+  private final float[] scaleMatrix = new float[16];
   private final float[] modelMatrix = new float[16];
   private final float[] viewMatrix = new float[16];
   private final float[] projectionMatrix = new float[16];
@@ -260,6 +256,12 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
 
         // Create the session.
         session = new Session(/* context= */ this);
+
+        try (InputStream stream = this.getAssets().open("models/markers.imgdb")) {
+          imageDatabase = AugmentedImageDatabase.deserialize(session, stream);
+        } catch (IOException ex) {
+          messageSnackbarHelper.showMessage(this, ex.getMessage());
+        }
       } catch (UnavailableArcoreNotInstalledException
           | UnavailableUserDeclinedInstallationException e) {
         message = "Please install ARCore";
@@ -344,7 +346,6 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
     // Prepare the rendering objects. This involves reading shaders and 3D model files, so may throw
     // an IOException.
     try {
-      planeRenderer = new PlaneRenderer(render);
       backgroundRenderer = new BackgroundRenderer(render);
       virtualSceneFramebuffer = new Framebuffer(render, /*width=*/ 1, /*height=*/ 1);
 
@@ -382,21 +383,6 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
           GLES30.GL_HALF_FLOAT,
           buffer);
       GLError.maybeThrowGLException("Failed to populate DFG texture", "glTexImage2D");
-
-      // Point cloud
-      pointCloudShader =
-          Shader.createFromAssets(
-                  render, "shaders/point_cloud.vert", "shaders/point_cloud.frag", /*defines=*/ null)
-              .setVec4(
-                  "u_Color", new float[] {31.0f / 255.0f, 188.0f / 255.0f, 210.0f / 255.0f, 1.0f})
-              .setFloat("u_PointSize", 5.0f);
-      // four entries per vertex: X, Y, Z, confidence
-      pointCloudVertexBuffer =
-          new VertexBuffer(render, /*numberOfEntriesPerVertex=*/ 4, /*entries=*/ null);
-      final VertexBuffer[] pointCloudVertexBuffers = {pointCloudVertexBuffer};
-      pointCloudMesh =
-          new Mesh(
-              render, Mesh.PrimitiveMode.POINTS, /*indexBuffer=*/ null, pointCloudVertexBuffers);
 
       // Virtual object to render (plane)
       virtualObjectTexture =
@@ -512,8 +498,10 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
         message = TrackingStateHelper.getTrackingFailureReasonString(camera);
       }
     } else if (hasTrackingPlane()) {
-      if (firstWrappedAnchor == null || secondWrappedAnchor == null) {
-        message = WAITING_FOR_TAP_MESSAGE;
+      if (firstPointPose == null) {
+        message = SEARCHING_FOR_TOP_RIGHT_MESSAGE;
+      } else if (secondPointPose == null) {
+        message = SEARCHING_FOR_BOTTOM_LEFT_MESSAGE;
       }
     } else {
       message = SEARCHING_PLANE_MESSAGE;
@@ -545,25 +533,6 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
     // Get camera matrix and draw.
     camera.getViewMatrix(viewMatrix, 0);
 
-    // Visualize tracked points.
-    // Use try-with-resources to automatically release the point cloud.
-    try (PointCloud pointCloud = frame.acquirePointCloud()) {
-      if (pointCloud.getTimestamp() > lastPointCloudTimestamp) {
-        pointCloudVertexBuffer.set(pointCloud.getPoints());
-        lastPointCloudTimestamp = pointCloud.getTimestamp();
-      }
-      Matrix.multiplyMM(modelViewProjectionMatrix, 0, projectionMatrix, 0, viewMatrix, 0);
-      pointCloudShader.setMat4("u_ModelViewProjection", modelViewProjectionMatrix);
-      render.draw(pointCloudMesh, pointCloudShader);
-    }
-
-    // Visualize planes.
-    planeRenderer.drawPlanes(
-        render,
-        session.getAllTrackables(Plane.class),
-        camera.getDisplayOrientedPose(),
-        projectionMatrix);
-
     // -- Draw occluded virtual objects
 
     // Update lighting parameters in the shader
@@ -572,34 +541,51 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
     // Visualize anchors created by touch.
     render.clear(virtualSceneFramebuffer, 0f, 0f, 0f, 0f);
 
-    if (firstWrappedAnchor != null && secondWrappedAnchor != null) {
-      Anchor first = this.firstWrappedAnchor.getAnchor();
-      Anchor second = this.secondWrappedAnchor.getAnchor();
+    this.firstPointPose = null;
+    this.secondPointPose = null;
 
-      if (first.getTrackingState() == TrackingState.TRACKING &&
-          second.getTrackingState() == TrackingState.TRACKING) {
-
-        Pose pose = Pose.makeInterpolated(first.getPose(), second.getPose(), 0.5f);
-
-        // Get the current pose of an Anchor in world space. The Anchor pose is updated
-        // during calls to session.update() as ARCore refines its estimate of the world.
-        pose.toMatrix(modelMatrix, 0);
-
-        // Calculate model/view/projection matrices
-        Matrix.multiplyMM(modelViewMatrix, 0, viewMatrix, 0, modelMatrix, 0);
-        Matrix.multiplyMM(modelViewProjectionMatrix, 0, projectionMatrix, 0, modelViewMatrix, 0);
-
-        // Update shader properties and draw
-        virtualObjectShader.setMat4("u_ModelView", modelViewMatrix);
-        virtualObjectShader.setMat4("u_ModelViewProjection", modelViewProjectionMatrix);
-
-        if (virtualObjectAnimatedTexture != null) {
-          virtualObjectAnimatedTexture.nextFrame();
-          virtualObjectShader.setTexture("u_AlbedoTexture", virtualObjectAnimatedTexture);
+    Collection<AugmentedImage> augmentedImages = frame.getUpdatedTrackables(AugmentedImage.class);
+    System.out.println(augmentedImages.size());
+    for (AugmentedImage image : augmentedImages) {
+      System.out.println(image.getName());
+      if (image.getTrackingState() == TrackingState.TRACKING) {
+        if (image.getTrackingMethod() == AugmentedImage.TrackingMethod.FULL_TRACKING ||
+            image.getTrackingMethod() == AugmentedImage.TrackingMethod.LAST_KNOWN_POSE) {
+          if (image.getIndex() == 0) {
+            firstPointPose = image.getCenterPose();
+          } else if (image.getIndex() == 1) {
+            secondPointPose = image.getCenterPose();
+          }
         }
-
-        render.draw(virtualObjectMesh, virtualObjectShader, virtualSceneFramebuffer);
       }
+    }
+
+    if (firstPointPose != null && secondPointPose != null) {
+      Pose pose = Pose.makeInterpolated(firstPointPose, secondPointPose, 0.5f);
+
+      // Get the current pose of an Anchor in world space. The Anchor pose is updated
+      // during calls to session.update() as ARCore refines its estimate of the world.
+      pose.toMatrix(modelMatrix, 0);
+
+      float xScale = (float)Math.sqrt(firstPointPose.tx() * secondPointPose.tx() + firstPointPose.tz() + secondPointPose.tz());
+      float yScale = Math.abs(firstPointPose.ty()) + Math.abs(secondPointPose.ty());
+
+      Matrix.scaleM(modelMatrix, 0, xScale, yScale, 1.0f );
+
+      // Calculate model/view/projection matrices
+      Matrix.multiplyMM(modelViewMatrix, 0, viewMatrix, 0, modelMatrix, 0);
+      Matrix.multiplyMM(modelViewProjectionMatrix, 0, projectionMatrix, 0, modelViewMatrix, 0);
+
+      // Update shader properties and draw
+      virtualObjectShader.setMat4("u_ModelView", modelViewMatrix);
+      virtualObjectShader.setMat4("u_ModelViewProjection", modelViewProjectionMatrix);
+
+      if (virtualObjectAnimatedTexture != null) {
+        virtualObjectAnimatedTexture.nextFrame();
+        virtualObjectShader.setTexture("u_AlbedoTexture", virtualObjectAnimatedTexture);
+      }
+
+      render.draw(virtualObjectMesh, virtualObjectShader, virtualSceneFramebuffer);
     }
 
     // Compose the virtual scene with the background.
@@ -630,23 +616,6 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
                     == OrientationMode.ESTIMATED_SURFACE_NORMAL)
             || (trackable instanceof InstantPlacementPoint)
             || (trackable instanceof DepthPoint)) {
-
-          // Adding an Anchor tells ARCore that it should track this position in
-          // space. This anchor is created on the Plane to place the 3D model
-          // in the correct position relative both to the world and to the plane.
-          if (this.firstWrappedAnchor == null) {
-            this.firstWrappedAnchor = new WrappedAnchor(hit.createAnchor(), trackable);
-          }
-          else if (this.secondWrappedAnchor == null) {
-            this.secondWrappedAnchor = new WrappedAnchor(hit.createAnchor(), trackable);
-          }
-          else {
-            this.firstWrappedAnchor.getAnchor().detach();
-            this.secondWrappedAnchor.getAnchor().detach();
-
-            this.firstWrappedAnchor = null;
-            this.secondWrappedAnchor = null;
-          }
 
           // For devices that support the Depth API, shows a dialog to suggest enabling
           // depth-based occlusion. This dialog needs to be spawned on the UI thread.
@@ -811,8 +780,7 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
     // https://google.github.io/filament/Filament.html#annex/sphericalharmonics
 
     if (coefficients.length != 9 * 3) {
-      throw new IllegalArgumentException(
-          "The given coefficients array must be of length 27 (3 components per 9 coefficients");
+      throw new IllegalArgumentException("The given coefficients array must be of length 27 (3 components per 9 coefficients");
     }
 
     // Apply each factor to every component of each coefficient
@@ -826,6 +794,9 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
   /** Configures the session with feature settings. */
   private void configureSession() {
     Config config = session.getConfig();
+    // TODO: Should probably switch back to fixed.
+    config.setFocusMode(Config.FocusMode.AUTO);
+    config.setAugmentedImageDatabase(imageDatabase);
     config.setPlaneFindingMode(Config.PlaneFindingMode.VERTICAL);
     config.setLightEstimationMode(Config.LightEstimationMode.ENVIRONMENTAL_HDR);
     if (session.isDepthModeSupported(Config.DepthMode.AUTOMATIC)) {
@@ -856,10 +827,10 @@ class WrappedAnchor {
   }
 
   public Anchor getAnchor() {
-    return anchor;
+    return this.anchor;
   }
 
   public Trackable getTrackable() {
-    return trackable;
+    return this.trackable;
   }
 }

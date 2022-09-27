@@ -44,6 +44,16 @@ public class AnimatedTexture implements ITexture {
     }
 
     @Override
+    public int getWidth() {
+        return this.imageTexture.getWidth();
+    }
+
+    @Override
+    public int getHeight() {
+        return this.imageTexture.getHeight();
+    }
+
+    @Override
     public void bind() {
         this.imageTexture.bind();
     }
