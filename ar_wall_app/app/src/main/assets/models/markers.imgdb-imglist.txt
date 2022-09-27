@@ -1,2 +1,0 @@
-BottomLeft|./BottomLeft.png
-TopRight|./TopRight.png
