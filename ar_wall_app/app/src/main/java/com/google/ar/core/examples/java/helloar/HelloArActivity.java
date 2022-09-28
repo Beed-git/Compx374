@@ -567,9 +567,13 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
       // during calls to session.update() as ARCore refines its estimate of the world.
       pose.toMatrix(modelMatrix, 0);
 
-      float xScale = (float)Math.sqrt(firstPointPose.tx() * secondPointPose.tx() + firstPointPose.tz() + secondPointPose.tz());
-      float yScale = Math.abs(firstPointPose.ty()) + Math.abs(secondPointPose.ty());
+      float xDist = Math.abs(firstPointPose.tx() - secondPointPose.tx());
+      float zDist = Math.abs(firstPointPose.tz() - secondPointPose.tz());
 
+      float xScale = (float)Math.sqrt(xDist * xDist + zDist * zDist);
+      float yScale = Math.abs(firstPointPose.ty() - secondPointPose.ty());
+
+      Matrix.rotateM(modelMatrix, 0, 90, 0, 1, 0);
       Matrix.scaleM(modelMatrix, 0, xScale, yScale, 1.0f );
 
       // Calculate model/view/projection matrices
@@ -810,27 +814,5 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
       config.setInstantPlacementMode(InstantPlacementMode.DISABLED);
     }
     session.configure(config);
-  }
-}
-
-/**
- * Associates an Anchor with the trackable it was attached to. This is used to be able to check
- * whether or not an Anchor originally was attached to an {@link InstantPlacementPoint}.
- */
-class WrappedAnchor {
-  private Anchor anchor;
-  private Trackable trackable;
-
-  public WrappedAnchor(Anchor anchor, Trackable trackable) {
-    this.anchor = anchor;
-    this.trackable = trackable;
-  }
-
-  public Anchor getAnchor() {
-    return this.anchor;
-  }
-
-  public Trackable getTrackable() {
-    return this.trackable;
   }
 }
