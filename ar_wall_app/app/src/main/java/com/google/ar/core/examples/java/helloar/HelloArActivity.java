@@ -18,6 +18,8 @@ package com.google.ar.core.examples.java.helloar;
 
 import android.content.DialogInterface;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.Image;
 import android.opengl.GLES30;
 import android.opengl.GLSurfaceView;
@@ -32,7 +34,7 @@ import android.widget.PopupMenu;
 import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import com.google.ar.core.Anchor;
+
 import com.google.ar.core.ArCoreApk;
 import com.google.ar.core.AugmentedImage;
 import com.google.ar.core.AugmentedImageDatabase;
@@ -61,6 +63,8 @@ import com.google.ar.core.examples.java.common.helpers.SnackbarHelper;
 import com.google.ar.core.examples.java.common.helpers.TapHelper;
 import com.google.ar.core.examples.java.common.helpers.TrackingStateHelper;
 import com.google.ar.core.examples.java.common.rendering.AnimatedTexture;
+import com.google.ar.core.examples.java.common.rendering.ImageBuffer;
+import com.google.ar.core.examples.java.common.rendering.ImageTexture;
 import com.google.ar.core.examples.java.common.samplerender.Framebuffer;
 import com.google.ar.core.examples.java.common.samplerender.GLError;
 import com.google.ar.core.examples.java.common.samplerender.Mesh;
@@ -77,8 +81,12 @@ import com.google.ar.core.exceptions.UnavailableArcoreNotInstalledException;
 import com.google.ar.core.exceptions.UnavailableDeviceNotCompatibleException;
 import com.google.ar.core.exceptions.UnavailableSdkTooOldException;
 import com.google.ar.core.exceptions.UnavailableUserDeclinedInstallationException;
+
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.nio.ByteBuffer;
 import java.util.Collection;
 import java.util.HashMap;
@@ -152,6 +160,10 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
   private Shader virtualObjectShader;
   private Texture virtualObjectTexture;
   private AnimatedTexture virtualObjectAnimatedTexture;
+
+  // Test object, needs to be abstracted away.
+  private Mesh downloadedImageMesh;
+  private ImageTexture downloadedImageTexture;
 
   private AugmentedImageDatabase imageDatabase;
 
@@ -392,6 +404,19 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
               Texture.WrapMode.CLAMP_TO_EDGE,
               Texture.ColorFormat.SRGB);
 
+      //URL url = new URL("https://commons.wikimedia.org/wiki/Earth#/media/File:The_Blue_Marble_(remastered).jpg");
+      try {
+        URL url = new URL("https://i.imgur.com/Mbi3wti.jpeg");
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        Bitmap bitmap = BitmapFactory.decodeStream(new BufferedInputStream(connection.getInputStream()));
+        ImageBuffer imageBuffer = ImageBuffer.fromBitmap(bitmap);
+        downloadedImageTexture = ImageTexture.createFromBuffer(imageBuffer);
+      } catch (Exception ex) {
+        messageSnackbarHelper.showError(this, "Failed to load an image.");
+      }
+
+      downloadedImageMesh = Mesh.createFromAsset(render,"models/plane.obj");
+
       virtualObjectAnimatedTexture = new AnimatedTexture(render, "models/imagesequence", 24);
 
       virtualObjectMesh = Mesh.createFromAsset(render, "models/plane.obj");
@@ -589,7 +614,14 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
         virtualObjectShader.setTexture("u_AlbedoTexture", virtualObjectAnimatedTexture);
       }
 
+      virtualObjectShader.setTexture("u_AlbedoTexture", virtualObjectAnimatedTexture);
       render.draw(virtualObjectMesh, virtualObjectShader, virtualSceneFramebuffer);
+
+      // Test image.
+      if (downloadedImageTexture != null) {
+        virtualObjectShader.setTexture("u_AlbedoTextureu", downloadedImageTexture);
+        render.draw(downloadedImageMesh, virtualObjectShader, virtualSceneFramebuffer);
+      }
     }
 
     // Compose the virtual scene with the background.

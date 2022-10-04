@@ -1,5 +1,6 @@
 package com.google.ar.core.examples.java.common.rendering;
 
+import android.graphics.Bitmap;
 import android.opengl.GLES30;
 import android.util.Log;
 
@@ -27,6 +28,12 @@ public class ImageTexture implements ITexture {
         ImageBuffer image = ImageBuffer.fromBitmap(render, asset);
         ImageTexture texture = new ImageTexture(image.getWidth(), image.getHeight());
         texture.setData(image.getWidth(), image.getHeight(), image.getBuffer());
+        return texture;
+    }
+
+    public static ImageTexture createFromBuffer(ImageBuffer buffer) {
+        ImageTexture texture = new ImageTexture(buffer.getWidth(), buffer.getHeight());
+        texture.setData(buffer.getWidth(), buffer.getHeight(), buffer.getBuffer());
         return texture;
     }
 

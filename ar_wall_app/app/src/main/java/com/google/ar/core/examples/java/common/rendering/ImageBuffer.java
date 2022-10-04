@@ -26,6 +26,10 @@ public class ImageBuffer {
                 convertBitmapToConfig(
                         BitmapFactory.decodeStream(render.getAssets().open(assetFileName)),
                         Bitmap.Config.ARGB_8888);
+        return fromBitmap(bitmap);
+    }
+
+    public static ImageBuffer fromBitmap(Bitmap bitmap) {
         ByteBuffer buffer = ByteBuffer.allocateDirect(bitmap.getByteCount());
         bitmap.copyPixelsToBuffer(buffer);
         buffer.rewind();
