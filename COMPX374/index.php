@@ -10,44 +10,52 @@
 	{
 		//Retrieve the form data
 		$email = $_POST['email'];
-        	$password = $_POST['password'];
+        $password = $_POST['password'];
 		
 		//Query the Artist and Moderator tables for the email
 		$artistQuery = "select * from Artist where email = '".$email."'";
-		$artistResult = $con->query($query);
+		$artistResult = $con->query($artistQuery);
 		
 		$moderatorQuery = "select * from Moderator where email = '".$email."'";
-		$moderatorResult = $con->query($query);
+		$moderatorResult = $con->query($moderatorQuery);
 		
-		//Check that the email already belongs to an artist
-		if($artistResult != FALSE)
+		//Check that the queries were processed successfully
+		if($artistResult != FALSE && $moderatorResult != FALSE)
 		{	
-			$row = $artistResult->fetch();
+			$artistRow = $artistResult->fetch();
+			$moderatorRow = $moderatorResult->fetch();
 			
-			//Check that the user has entered the correct password
-			if (password_verify($password, $row['password']))
+			//Check that the email belongs to an artist
+			if (gettype($artistRow) == 'array')
 			{
-				$_SESSION["loggedin"] = true;
-				$_SESSION['email'] = $email;
-				header("Location: php/upload.php");
+				//Check that the user has entered the correct password
+				if (password_verify($password, $artistRow['password']))
+				{
+					$_SESSION["loggedin"] = true;
+					$_SESSION['email'] = $email;
+					header("Location: php/upload.php");
+				}
+				//Otherwise, display an error message
+				else
+				{
+					echo '<p>Your username or password was incorrect.</p>';
+				}
 			}
-			//Otherwise, display an error message
-			else
+			//Check if the email belongs to a moderator
+			elseif (gettype($moderatorRow) == 'array')
 			{
-				echo '<p>Your username or password was incorrect.</p>';
-			}
-		}
-		//Check if the email belongs to a moderator
-		elseif($moderatorResult != FALSE)
-		{	
-			$row = $moderatorResult->fetch();
-			
-			//Check that the user has entered the correct password
-			if (password_verify($password, $row['password']))
-			{
-				$_SESSION["loggedin"] = true;
-				$_SESSION['email'] = $email;
-				header("Location: php/newCompetition.php");
+				//Check that the user has entered the correct password
+				if (password_verify($password, $moderatorRow['password']))
+				{
+					$_SESSION["loggedin"] = true;
+					$_SESSION['email'] = $email;
+					header("Location: php/newCompetition.php");
+				}
+				//Otherwise, display an error message
+				else
+				{
+					echo '<p>Your username or password was incorrect.</p>';
+				}
 			}
 			//Otherwise, display an error message
 			else
@@ -58,7 +66,7 @@
 		//Otherwise, display an error message
 		else
 		{
-			echo '<p>Your username or password was incorrect.</p>';
+			echo '<p>Error in database query.</p>';
 		}
 	}
 ?>
