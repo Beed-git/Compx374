@@ -23,24 +23,25 @@
         android:layout_weight="3"
         android:orientation="horizontal">
 
-
         <ToggleButton
-            android:id="@+id/buttonVoteLike"
+            android:id="@+id/toggleButtonVoteLike"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginLeft="10dp"
             android:layout_weight="1"
-            android:text="Like" />
+            android:textOn="Like"
+            android:textOff="Like" />
 
         <ToggleButton
-            android:id="@+id/buttonVoteDislike"
+            android:id="@+id/toggleButtonVoteDislike"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginRight="10dp"
             android:layout_weight="1"
-            android:text="Dislike" />
+            android:textOn="Dislike"
+            android:textOff="Dislike" />
     </LinearLayout>
 
     <LinearLayout
@@ -58,7 +59,8 @@
             app:srcCompat="@drawable/search_icon"
             android:background="@null"
             android:scaleType="fitCenter"
-            android:layout_margin="10dp"/>
+            android:layout_margin="10dp"
+            android:onClick="searchButton"/>
 
         <ImageButton
             android:id="@+id/imageButtonGallery"
@@ -68,7 +70,8 @@
             app:srcCompat="@drawable/gallery_icon"
             android:background="@null"
             android:scaleType="fitCenter"
-            android:layout_margin="10dp"/>
+            android:layout_margin="10dp"
+            android:onClick="galleryButton"/>
 
         <ImageButton
             android:id="@+id/imageButtonSettings"
@@ -78,7 +81,8 @@
             app:srcCompat="@drawable/settings_icon"
             android:background="@null"
             android:scaleType="fitCenter"
-            android:layout_margin="10dp"/>
+            android:layout_margin="10dp"
+            android:onClick="settingsButton"/>
     </LinearLayout>
 
 </LinearLayout>
