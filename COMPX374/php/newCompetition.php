@@ -20,11 +20,14 @@
 		$description = $_POST['description'];
 		
 		//Insert new competition into the database
-		$query = "insert into Competition(name, description) values('".$name."','".$description."')";
-		$con->query($query);
+		$query = "insert into Competition(name, description) values('".$name."','".$description."')";		
+		$con->exec($query);
 		
-		$last_insert_id = mysql_insert_id();
-		$update_query = "update Location set current_competition = ".$last_insert_id."where name = 'anywhere'";
+		//Get the ID of the newly created competition
+		$last_id = $con->lastInsertId();
+		
+		//Set this competition as the current competition
+		$update_query = "update Location set current_competition = ".$last_id." where name = 'anywhere'";
 		$con->query($update_query);
 	}
 ?>
