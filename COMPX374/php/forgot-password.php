@@ -4,7 +4,7 @@
 		<meta charset="UTF-8">
 		<title>Reset Password</title>
 		<link href="../css/login.css" rel="stylesheet" type="text/css">
-		</head>
+	</head>
 	<body>
 		<form method="post" action="" name="login-form">
 			<h1>Reset Password</h1>
