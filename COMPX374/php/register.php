@@ -13,50 +13,65 @@
 		$email = $_POST['email'];
         	$password = $_POST['password'];
 		$story = $_POST['story'];
-		//$user_type = $POST['user_type'];
 		
 		//Hash the password
 		$hashed_password = password_hash($password, PASSWORD_DEFAULT);
 		
 		//Query the Artist and Moderator tables for the email
 		$artistQuery = "select * from Artist where email = '".$email."'";
-		$artistResult = $con->query($query);
+		$artistResult = $con->query($artistQuery);
 		
 		$moderatorQuery = "select * from Moderator where email = '".$email."'";
-		$moderatorResult = $con->query($query);
+		$moderatorResult = $con->query($moderatorQuery);
 		
-		//echo '<p> The user type: '.$user_type.'.</p>';
+		echo '<p>Got to here</p>';
 		
-		//Check that the email does not already exist in the database
-		//if($result == FALSE)
-		//{
-			if(isset($_POST['user_type']) && $_POST['user_type'] == 'Moderator')
-			{
-				//Insert new user into the database
-				$moderatorQuery = "insert into Moderator(email,username,password) values('".$email."','".$username."','".$hashed_password."')";
-				$result2 = $con->query($moderatorQuery);
+		//Check that the queries were processed successfully
+		if($artistResult != FALSE && $moderatorResult != FALSE)
+		{
+			echo '<p>And here</p>';
 			
-				if ($result2)
+			$artistRow = $artistResult->fetch();
+			$moderatorRow = $moderatorResult->fetch();
+			
+			echo '<p>Artist Row Type: '.gettype($artistRow).'</p>';
+			echo '<p>Moderator Row Type: '.gettype($moderatorRow).'</p>';
+			
+			//Check that the email does not already exist in the database
+			if (gettype($artistRow) != 'array' && gettype($moderatorRow) != 'array')
+			{
+				if(isset($_POST['user_type']) && $_POST['user_type'] == 'Moderator')
 				{
-               	 		$_SESSION["loggedin"] = true;
-					$_SESSION['email'] = $email;
-					header("Location: newCompetition.php");
-            			}
+					//Insert new user into the database
+					$moderatorQuery = "insert into Moderator(email,username,password) values('".$email."','".$username."','".$hashed_password."')";
+					$result2 = $con->query($moderatorQuery);
+			
+					if ($result2)
+					{
+						$_SESSION["loggedin"] = true;
+						$_SESSION['email'] = $email;
+						header("Location: newCompetition.php");
+					}
+				}
+				else
+				{
+					//Insert new user into the database
+					$artistQuery = "insert into Artist(email,username,password,story) values('".$email."','".$username."','".$hashed_password."','".$story."')";
+					$result2 = $con->query($artistQuery);
+			
+					if ($result2)
+					{
+						$_SESSION["loggedin"] = true;
+						$_SESSION['email'] = $email;
+						header("Location: upload.php");
+					}
+				}	
 			}
 			else
 			{
-				//Insert new user into the database
-				$artistQuery = "insert into Artist(email,username,password,story) values('".$email."','".$username."','".$hashed_password."','".$story."')";
-				$result2 = $con->query($artistQuery);
-			
-				if ($result2)
-				{
-               	 		$_SESSION["loggedin"] = true;
-					$_SESSION['email'] = $email;
-					header("Location: upload.php");
-            			}
-			}	
-		//}
+				echo '<p>This email address is already registered.</p>';
+			}
+		}
 	}
 ?>
 <!DOCTYPE html>
