@@ -74,6 +74,21 @@
 		<meta charset="UTF-8">
 		<title>Register</title>
 		<link href="../css/login.css" rel="stylesheet" type="text/css">
+		<script>
+			function toggleStoryDisplay()
+			{
+				var story = document.getElementById('story');
+				
+				if (story.style.display == "none")
+				{
+					story.style.display = "block";
+				}
+				else
+				{
+					story.style.display = "none";
+				}
+			};
+		</script>
 	</head>
 	<body>
 		<form method="post" action="" name="signup-form">
@@ -88,14 +103,14 @@
 				<input type="password" name="password" placeholder="Password" required />
 			</div>
 			<div class="form-element">
-				<input type="text" name="story" placeholder="Story" />
+				<input type="text" id="story" name="story" placeholder="Story" />
 			</div>
 			<div class="form-element">
-				<input type="checkbox" name="user_type" value="Moderator">
+				<input type="checkbox" name="user_type" onchange="toggleStoryDisplay()" value="Moderator">
 				<label for="user_type">Moderator</label><br>
 			</div>			
 			<button type="submit" name="register" value="register">Register</button>
 			<p>Already have an account? <a href="../index.php">Log in</a></p>
 		</form>
 	</body>
-</html>	
+</html>
