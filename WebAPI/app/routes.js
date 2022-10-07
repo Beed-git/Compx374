@@ -1,23 +1,28 @@
 module.exports = app => {
-  const artists = require("./controllers/artists.controller");
-  const competitions = require("./controllers/competition.controller");
-  const moderators = require("./controllers/moderators.controller");
-  const media = require("./controllers/media.controller")
+	const artists = require("./controllers/artists.controller");
+	const competitions = require("./controllers/competition.controller");
+	const moderators = require("./controllers/moderators.controller");
+	const media = require("./controllers/media.controller");
+	const auth = require("./auth");
 
-  // Main page.
+	// Main page.
 	app.get("/", (req, res) => {
 		res.json({ message: "Tuakiri" });
 	});
 
-  app.get("/artists", artists.getArtistsQuery);
-  app.get("/artists/:id", artists.getArtistById);
+	app.get("/authtest/", auth, (req, res) => {
+		res.status(200).send("Auth success!");
+	});
 
-  app.get("/moderators", moderators.getModeratorsQuery);
-  app.get("/moderators/:id", moderators.getModeratorById);
+	app.get("/artists", artists.getArtistsQuery);
+	app.get("/artists/:id", artists.getArtistById);
 
-  app.get("/media", media.getMediaQuery);
-  app.get("/media/:id", media.getMediaById);
+	app.get("/moderators", moderators.getModeratorsQuery);
+	app.get("/moderators/:id", moderators.getModeratorById);
 
-  app.get("/competitions", competitions.getCompetitions);
-  app.get("/competitions/:id", competitions.getCompetitionById);
+	app.get("/media", media.getMediaQuery);
+	app.get("/media/:id", media.getMediaById);
+
+	app.get("/competitions", competitions.getCompetitions);
+	app.get("/competitions/:id", competitions.getCompetitionById);
 }
