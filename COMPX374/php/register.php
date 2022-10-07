@@ -11,7 +11,7 @@
 		//Retrieve the form data
 		$username = $_POST['username'];
 		$email = $_POST['email'];
-        	$password = $_POST['password'];
+        $password = $_POST['password'];
 		$story = $_POST['story'];
 		
 		//Hash the password
@@ -24,18 +24,12 @@
 		$moderatorQuery = "select * from Moderator where email = '".$email."'";
 		$moderatorResult = $con->query($moderatorQuery);
 		
-		echo '<p>Got to here</p>';
-		
 		//Check that the queries were processed successfully
 		if($artistResult != FALSE && $moderatorResult != FALSE)
 		{
-			echo '<p>And here</p>';
 			
 			$artistRow = $artistResult->fetch();
 			$moderatorRow = $moderatorResult->fetch();
-			
-			echo '<p>Artist Row Type: '.gettype($artistRow).'</p>';
-			echo '<p>Moderator Row Type: '.gettype($moderatorRow).'</p>';
 			
 			//Check that the email does not already exist in the database
 			if (gettype($artistRow) != 'array' && gettype($moderatorRow) != 'array')
