@@ -8,16 +8,16 @@
     <EditText
         android:id="@+id/editTextTextPersonName"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="0"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:ems="1"
         android:inputType="textPersonName"
         android:text="Name" />
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="20">
+        android:layout_height="0dp"
+        android:layout_weight="10">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -34,6 +34,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:paddingHorizontal="10dp"
+                    android:paddingBottom="5dp"
                     android:orientation="vertical">
 
                     <ImageButton
@@ -53,6 +55,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:paddingHorizontal="10dp"
+                    android:paddingBottom="5dp"
                     android:orientation="vertical">
 
                     <ImageButton
@@ -73,12 +77,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+
                 android:orientation="horizontal">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:paddingHorizontal="10dp"
+                    android:paddingBottom="5dp"
                     android:orientation="vertical">
 
                     <ImageButton
@@ -98,6 +105,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:paddingHorizontal="10dp"
+                    android:paddingBottom="5dp"
                     android:orientation="vertical">
 
                     <ImageButton
@@ -124,6 +133,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:paddingHorizontal="10dp"
+                    android:paddingBottom="5dp"
                     android:orientation="vertical">
 
                     <ImageButton
@@ -143,6 +154,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:paddingHorizontal="10dp"
+                    android:paddingBottom="5dp"
                     android:orientation="vertical">
 
                     <ImageButton
@@ -169,6 +182,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:paddingHorizontal="10dp"
+                    android:paddingBottom="5dp"
                     android:orientation="vertical">
 
                     <ImageButton
@@ -188,6 +203,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:paddingHorizontal="10dp"
+                    android:paddingBottom="5dp"
                     android:orientation="vertical">
 
                     <ImageButton
@@ -205,11 +222,5 @@
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
-    <Button
-        android:id="@+id/button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="Button" />
 
 </LinearLayout>
