@@ -18,6 +18,6 @@ COPY . .
 #This is the internal port server.js is currently set up to listen on
 ENV PORT=3000
 
-#Use this external port on the actual machine
-EXPOSE 443
+#
+EXPOSE 3000
 CMD [ "node", "server.js" ]
