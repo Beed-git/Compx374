@@ -1,8 +1,11 @@
 package com.google.ar.core.examples.java.helloar;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Editable;
 import android.view.View;
 
 import android.widget.Button;
@@ -31,6 +34,39 @@ public class StartUpActivity extends Activity {
         buttonRegister          = findViewById(R.id.buttonRegister);
         email                   = findViewById(R.id.editTextTextEmailAddress);
         password                = findViewById(R.id.editTextTextPassword);
+
+        buttonForgotPassword.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                AlertDialog.Builder alert = new AlertDialog.Builder(StartUpActivity.this);
+
+                final EditText edittext = new EditText(StartUpActivity.this);
+                edittext.setHint("Email");
+                //alert.setMessage("Enter Your Message");
+                alert.setTitle("Reset Password");
+
+                alert.setView(edittext);
+
+                alert.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        String YouEditTextValue = edittext.getText().toString();
+                        Toast toast = Toast.makeText(StartUpActivity.this,
+                                                    "An email has been sent with instructions to reset your password",
+                                                    Toast.LENGTH_SHORT);
+                        toast.show();
+                        dialog.dismiss();
+                    }
+                });
+
+                alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        // what ever you want to do with No option.
+                        dialog.dismiss();
+                    }
+                });
+
+                alert.show();
+            }
+        });
     }
 
     public void guestEnter(View v) {
