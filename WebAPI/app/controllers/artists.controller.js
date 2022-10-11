@@ -34,6 +34,8 @@ const getArtistById = async function(req, res) {
 			console.log(err);
 			res.sendStatus(500);
 		}
+	} else {
+		res.status(404).send("'" + req.params.id + "' is not a number.");
 	}
 }
 

@@ -39,18 +39,7 @@ const getCompetitionById = async function(req, res) {
     }
 }
 
-const getCurrentCompetition = async function(req, res) {
-    try {
-        const competition = await Competition.getCurrentCompetition(req.query.location);
-        res.status(200).json({ competition: competition });
-    } catch (err) {
-        console.log(err);
-        res.sendStatus(500);
-    }
-}
-
 module.exports = {
     getCompetitions,
     getCompetitionById,
-    getCurrentCompetition,
 }

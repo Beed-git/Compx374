@@ -33,6 +33,9 @@ const getMediaById = async function(req, res) {
 			res.sendStatus(500);
 		}
 	}
+	else {
+		res.status(404).send("'" + req.params.id + "' is not a number.");
+	}
 }
 
 const getMediaByArtist = async function (req, res, artist_id) {

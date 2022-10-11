@@ -25,5 +25,4 @@ module.exports = app => {
 
 	app.get("/competitions", competitions.getCompetitions);
 	app.get("/competitions/:id", competitions.getCompetitionById);
-	app.get("/competitions/:location", competitions.getCurrentCompetition);
 }
