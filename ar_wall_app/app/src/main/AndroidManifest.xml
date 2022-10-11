@@ -30,7 +30,7 @@
             android:screenOrientation="locked"
             android:theme="@style/Theme.AppCompat.NoActionBar"/>
         <activity
-            android:name=".GalleryActivity"
+            android:name=".SearchActivity"
             android:exported="false"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="locked"
