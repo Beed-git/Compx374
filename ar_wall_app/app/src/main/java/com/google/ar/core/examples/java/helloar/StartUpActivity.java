@@ -49,7 +49,7 @@ public class StartUpActivity extends Activity {
     }
 
     public void registerButton(View v) {
-        Intent intent = new Intent(this, HomeActivity.class);
+        Intent intent = new Intent(this, RegisterActivity.class);
         startActivity(intent);
     }
 }

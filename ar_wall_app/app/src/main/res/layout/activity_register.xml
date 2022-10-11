@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".RegisterActivity"
+    android:orientation="vertical"
+    android:paddingBottom="100dp"
+    android:paddingTop="50dp">
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:srcCompat="@drawable/tuakiri_launch"
+        android:layout_weight="3"
+        android:padding="0dp"/>
+
+    <EditText
+        android:id="@+id/editTextTextEmailAddressRegister"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:ems="10"
+        android:inputType="textEmailAddress"
+        android:layout_weight="1"
+        android:padding="10dp"/>
+
+    <EditText
+        android:id="@+id/editTextTextPasswordRegister1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:ems="10"
+        android:inputType="textPassword"
+        android:layout_weight="1"
+        android:padding="10dp"/>
+
+    <EditText
+        android:id="@+id/editTextTextPasswordRegister2"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:ems="10"
+        android:inputType="textPassword"
+        android:layout_weight="1"
+        android:padding="10dp"/>
+
+    <Button
+        android:id="@+id/buttonConfirmRegister"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:text="Button"
+        android:layout_weight="1"
+        android:padding="10dp"/>
+
+    <Button
+        android:id="@+id/buttonCancelRegister"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:text="Button"
+        android:layout_weight="1"
+        android:padding="10dp"/>
+</LinearLayout>

@@ -24,23 +24,26 @@
         android:usesCleartextTraffic="false"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
+            android:name=".RegisterActivity"
+            android:exported="false" />
+        <activity
             android:name=".HomeActivity"
-            android:exported="false"
             android:configChanges="orientation|screenSize"
+            android:exported="false"
             android:screenOrientation="locked"
-            android:theme="@style/Theme.AppCompat.NoActionBar"/>
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
             android:name=".GalleryActivity"
-            android:exported="false"
             android:configChanges="orientation|screenSize"
+            android:exported="false"
             android:screenOrientation="locked"
-            android:theme="@style/Theme.AppCompat.NoActionBar"/>
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
             android:name=".HelloArActivity"
-            android:exported="true"
             android:configChanges="orientation|screenSize"
+            android:exported="true"
             android:screenOrientation="locked"
-            android:theme="@style/Theme.AppCompat.NoActionBar"/>
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
             android:name=".StartUpActivity"
             android:configChanges="orientation|screenSize"
