@@ -1,0 +1,52 @@
+const db = require("./db");
+const util = require("util");
+
+const query = util.promisify(db.query).bind(db);
+
+const Artist = function(row) {
+    return {
+        id: row.artist_id,
+        email: row.email,
+        username: row.username,
+        password: row.password,
+        story: row.story,
+    }
+}
+
+const getAllArtists = async function() {
+    const res = await query("select * from Artist");
+    let artists = [];
+    res.forEach((row) => {
+        artists.push(Artist(row));
+    });
+    return artists;
+}
+
+const getArtistById = async function(id) {
+    const res = await query("select * from Artist where artist_id = " + id);
+    if (res.length > 0) {
+        return Artist(res[0]);
+    } else return null;
+}
+
+const getArtistByUsername = async function(username) {
+    const res = await query("select * from Artist where username = \"" + username + "\"");
+    if (res.length > 0) {
+        return Artist(res[0]);
+    } else return null;
+}
+
+const getArtistByEmail = async function(email) {
+    const res = await query("select * from Artist where email = \"" + email + "\"");
+    if (res.length > 0) {
+        return Artist(res[0]);
+    } else return null;
+}
+
+module.exports = {
+    Artist,
+    getAllArtists,
+    getArtistById,
+    getArtistByUsername,
+    getArtistByEmail,
+};
