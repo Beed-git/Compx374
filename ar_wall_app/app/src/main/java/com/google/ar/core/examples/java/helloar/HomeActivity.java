@@ -60,7 +60,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     public void galleryButton(View v) {
-        Intent intent = new Intent(this, SearchActivity.class);
+        Intent intent = new Intent(this, GalleryActivity.class);
         startActivity(intent);
     }
 
