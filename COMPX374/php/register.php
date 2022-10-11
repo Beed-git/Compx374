@@ -9,10 +9,19 @@
 	if(isset($_POST['register']))
 	{
 		//Retrieve the form data
-		$username = $_POST['username'];
+		$firstname = $_POST['firstname'];
+		$lastname = $_POST['lastname'];
 		$email = $_POST['email'];
         $password = $_POST['password'];
+		$confirmPassword = $_POST['confirmPassword'];
 		$story = $_POST['story'];
+		
+		//Deal with any apostrophes present in the input
+		$username = str_replace("'", "''", $username);
+		$story = str_replace("'", "''", $story);
+		
+		//Create username from first name and last name
+		$username = $firstname.' '.$lastname;
 		
 		//Hash the password
 		$hashed_password = password_hash($password, PASSWORD_DEFAULT);
@@ -34,36 +43,54 @@
 			//Check that the email does not already exist in the database
 			if (gettype($artistRow) != 'array' && gettype($moderatorRow) != 'array')
 			{
-				if(isset($_POST['user_type']) && $_POST['user_type'] == 'Moderator')
+				//Check that the password is the same as the confirmation password
+				if ($password == $confirmPassword)
 				{
-					//Insert new user into the database
-					$moderatorQuery = "insert into Moderator(email,username,password) values('".$email."','".$username."','".$hashed_password."')";
-					$result2 = $con->query($moderatorQuery);
-			
-					if ($result2)
+					if(isset($_POST['user_type']) && $_POST['user_type'] == 'Moderator')
 					{
-						$_SESSION["loggedin"] = true;
-						$_SESSION['email'] = $email;
-						header("Location: newCompetition.php");
+						//Insert new user into the database
+						$moderatorQuery = "insert into Moderator(email,username,password) values('".$email."','".$username."','".$hashed_password."')";
+						$result2 = $con->query($moderatorQuery);
+			
+						if ($result2)
+						{
+							$_SESSION["loggedin"] = true;
+							$_SESSION['email'] = $email;
+							header("Location: newCompetition.php");
+						}
+						//Otherwise, display an error message
+						else
+						{
+							echo '<div class="error"><p>Error in database query.</p></div>';
+						}
+					}
+					else
+					{
+						//Insert new user into the database
+						$artistQuery = "insert into Artist(email,username,password,story) values('".$email."','".$username."','".$hashed_password."','".$story."')";
+						$result2 = $con->query($artistQuery);
+			
+						if ($result2)
+						{
+							$_SESSION["loggedin"] = true;
+							$_SESSION['email'] = $email;
+							header("Location: upload.php");
+						}
+						//Otherwise, display an error message
+						else
+						{
+							echo '<div class="error"><p>Error in database query.</p></div>';
+						}
 					}
 				}
 				else
 				{
-					//Insert new user into the database
-					$artistQuery = "insert into Artist(email,username,password,story) values('".$email."','".$username."','".$hashed_password."','".$story."')";
-					$result2 = $con->query($artistQuery);
-			
-					if ($result2)
-					{
-						$_SESSION["loggedin"] = true;
-						$_SESSION['email'] = $email;
-						header("Location: upload.php");
-					}
+					echo '<div class="error"><p>The password and confirmation password do not match.</p></div>';
 				}	
 			}
 			else
 			{
-				echo '<p>This email address is already registered.</p>';
+				echo '<div class="error"><p>This email address is already registered.</p></div>';
 			}
 		}
 	}
@@ -94,7 +121,10 @@
 		<form method="post" action="" name="signup-form">
 			<h1>Create an Account for Tuakiri</h1>
 			<div class="form-element">
-				<input type="text" name="username" placeholder="Name" required />
+				<input type="text" name="firstname" placeholder="First Name" required />
+			</div>
+			<div class="form-element">
+				<input type="text" name="lastname" placeholder="Last Name" required />
 			</div>
 			<div class="form-element">
 				<input type="email" name="email" placeholder="Email" required />
@@ -103,7 +133,10 @@
 				<input type="password" name="password" placeholder="Password" required />
 			</div>
 			<div class="form-element">
-				<input type="text" id="story" name="story" placeholder="Story" />
+				<input type="password" name="confirmPassword" placeholder="Confirm Password" required />
+			</div>
+			<div class="form-element">
+				<textarea name="story" id="story" placeholder="Story" cols="50" rows="10" maxlength="500"></textarea>
 			</div>
 			<div class="form-element">
 				<input type="checkbox" name="user_type" onchange="toggleStoryDisplay()" value="Moderator">
@@ -113,4 +146,4 @@
 			<p>Already have an account? <a href="../index.php">Log in</a></p>
 		</form>
 	</body>
-</html>
+</html>	
