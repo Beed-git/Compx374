@@ -5,24 +5,36 @@ module.exports = app => {
 	const media = require("./controllers/media.controller");
 	const auth = require("./auth");
 
+	const args = process.argv.slice(2);
+	for (let i = 0; i < args.length; i++) {
+		const arg = args[i];
+		console.log(args);
+		if (arg == "--gen-token") {
+			i++;
+			if (i < args.length) {
+				const location = args[i];
+				const token = auth.genToken(location);
+				console.log("Generated token for '" + location + "': " + token);
+			} else {
+				console.log("Please provide a location to generate the token for.");
+			}
+		}
+	}
+
 	// Main page.
 	app.get("/", (req, res) => {
 		res.json({ message: "Tuakiri" });
 	});
 
-	app.get("/authtest/", auth, (req, res) => {
-		res.status(200).send("Auth success!");
-	});
+	app.get("/artists", auth.verifyToken, artists.getArtistsQuery);
+	app.get("/artists/:id", auth.verifyToken, artists.getArtistById);
 
-	app.get("/artists", artists.getArtistsQuery);
-	app.get("/artists/:id", artists.getArtistById);
+	app.get("/moderators", auth.verifyToken, moderators.getModeratorsQuery);
+	app.get("/moderators/:id", auth.verifyToken, moderators.getModeratorById);
 
-	app.get("/moderators", moderators.getModeratorsQuery);
-	app.get("/moderators/:id", moderators.getModeratorById);
+	app.get("/media", auth.verifyToken, media.getMediaQuery);
+	app.get("/media/:id", auth.verifyToken, media.getMediaById);
 
-	app.get("/media", media.getMediaQuery);
-	app.get("/media/:id", media.getMediaById);
-
-	app.get("/competitions", competitions.getCompetitions);
-	app.get("/competitions/:id", competitions.getCompetitionById);
+	app.get("/competitions", auth.verifyToken, competitions.getCompetitions);
+	app.get("/competitions/:id", auth.verifyToken, competitions.getCompetitionById);
 }
