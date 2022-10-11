@@ -24,14 +24,14 @@ const getAllMedia = async function() {
 }
 
 const getMediaById = async function(id) {
-    const res = await query("select * from Media where media_id = " + id);
+    const res = await query("select * from Media where media_id = " + db.escape(id));
     if (res.length > 0) {
-        return Artist(res[0]);
+        return Media(res[0]);
     } else return null;
 }
 
 const getMediaByArtist = async function(id) {
-    const res = await query("select * from Media where artist_id = " + id);
+    const res = await query("select * from Media where artist_id = " + db.escape(id));
     let media = [];
     res.forEach((row) => {
         media.push(Media(row));

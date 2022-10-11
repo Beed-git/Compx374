@@ -34,8 +34,7 @@ const getCompetitionById = async function(req, res) {
 			res.sendStatus(500);
 		}
 	} else {
-        console.log("Id is not a number.");
-        res.sendStatus(500);
+		res.status(404).send("'" + req.params.id + "' is not a number.");
     }
 }
 

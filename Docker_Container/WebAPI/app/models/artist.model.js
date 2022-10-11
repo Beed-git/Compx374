@@ -23,21 +23,21 @@ const getAllArtists = async function() {
 }
 
 const getArtistById = async function(id) {
-    const res = await query("select * from Artist where artist_id = " + id);
+    const res = await query("select * from Artist where artist_id = " + db.escape(id));
     if (res.length > 0) {
         return Artist(res[0]);
     } else return null;
 }
 
 const getArtistByUsername = async function(username) {
-    const res = await query("select * from Artist where username = \"" + username + "\"");
+    const res = await query("select * from Artist where username = " + db.escape(username));
     if (res.length > 0) {
         return Artist(res[0]);
     } else return null;
 }
 
 const getArtistByEmail = async function(email) {
-    const res = await query("select * from Artist where email = \"" + email + "\"");
+    const res = await query("select * from Artist where email = " + db.escape(email));
     if (res.length > 0) {
         return Artist(res[0]);
     } else return null;
