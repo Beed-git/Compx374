@@ -56,17 +56,17 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     public void searchButton(View v) {
-        Intent intent = new Intent(this, HelloArActivity.class);
+        Intent intent = new Intent(this, GalleryActivity.class);
         startActivity(intent);
     }
 
     public void galleryButton(View v) {
-        Intent intent = new Intent(this, HelloArActivity.class);
+        Intent intent = new Intent(this, GalleryActivity.class);
         startActivity(intent);
     }
 
     public void settingsButton(View v) {
-        Intent intent = new Intent(this, HelloArActivity.class);
+        Intent intent = new Intent(this, GalleryActivity.class);
         startActivity(intent);
     }
 }
