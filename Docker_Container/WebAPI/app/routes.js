@@ -8,7 +8,6 @@ module.exports = app => {
 	const args = process.argv.slice(2);
 	for (let i = 0; i < args.length; i++) {
 		const arg = args[i];
-		console.log(args);
 		if (arg == "--gen-token") {
 			i++;
 			if (i < args.length) {

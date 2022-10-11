@@ -1,14 +1,16 @@
 package com.google.ar.core.examples.java.helloar;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 
-public class GalleryActivity extends AppCompatActivity {
+import androidx.appcompat.app.AppCompatActivity;
+
+
+public class SearchActivity extends AppCompatActivity{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_gallery);
+        System.out.println(("Hi Brad"));
+        setContentView(R.layout.activity_search);
     }
 }
