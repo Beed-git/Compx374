@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.CompoundButton;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
 public class HomeActivity extends AppCompatActivity {
@@ -56,7 +55,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     public void searchButton(View v) {
-        Intent intent = new Intent(this, GalleryActivity.class);
+        Intent intent = new Intent(this, SearchActivity.class);
         startActivity(intent);
     }
 
@@ -66,7 +65,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     public void settingsButton(View v) {
-        Intent intent = new Intent(this, GalleryActivity.class);
+        Intent intent = new Intent(this, SearchActivity.class);
         startActivity(intent);
     }
 }

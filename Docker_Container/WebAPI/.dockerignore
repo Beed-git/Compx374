@@ -1,0 +1,7 @@
+node_modules
+npm-debug.log
+.gitignore
+
+
+#expose port 443 (on machine), 
+#   and route to internal port 3000 (of container)
