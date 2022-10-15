@@ -18,25 +18,41 @@
 		<script>
 			//Fetch the submissions for the current competition
 			let getSubmissions = () => {
-				fetch("getSubmissions.php", {method: 'post'}).then(response => response.text()).then(displaySubmissions);
-			}
-
-			//Display the submissions for the current competition
-			let displaySubmissions = (response) => {
-				document.getElementById("submissions").innerHTML = response;
+				fetch("getSubmissions.php", {method: 'post'}).then(response => response.text()).then(displayResults);
 			}
 			
-			//getSubmissions() --> submissions should have the image (selectable) --> takes you to page with image, mural name, mural description, artist name, artist description & approve/disapprove options
+			//Fetch the info for the individual selected submission
+			let viewSubmission = (media_id) => {
+				fetch("getSubmissionInfo.php", {method: 'post', body: media_id}).then(response => response.text()).then(displayResults);
+			}
+			
+			//Approve the selected submission
+			let approveSubmission = (media_id) => {
+				if (confirm("Are you sure you want to add this submission to the current competition?")) {
+					fetch("approveSubmission.php", {method: 'post', body: media_id}).then(response => response.text()).then(displayResults);
+				}
+			}
+			
+			//Disapprove the selected submission
+			let disapproveSubmission = (media_id) => {
+				if (confirm("Are you sure you want to permanently delete this submission?")) {
+					fetch("disapproveSubmission.php", {method: 'post', body: media_id}).then(response => response.text()).then(displayResults);
+				}
+			}
+			
+			//Display the results
+			let displayResults = (response) => {
+				document.getElementById("submissions").innerHTML = response;
+			}
 		</script>
 	</head>
 	<body onload="getSubmissions();">
 		<div class="topnav">
-			<a class="active" href="reviewSubmissions.php">Review Submissions</a>
+			<a class="active" href="submissions.php">Review Submissions</a>
 			<a href="newCompetition.php">New Competition</a>
-			<a href="newModerator.php">Accept New Moderator</a>
+			<a href="newModerator.php">Register New Moderator</a>
 			<a class="logout" href="logout.php">Log out</a>
 		</div>
-		<h1>Review Submissions</h1>
 		<div id="submissions"></div>
 	</body>
 </html>	
