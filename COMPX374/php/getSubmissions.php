@@ -19,6 +19,9 @@
 	//Check that we get data back
 	if($result1 != FALSE)
 	{
+		//Output the header
+		echo "<h1>Review Submissions</h1>";
+		
 		//Initialize the counter
 		$count = 0;
 		
@@ -40,8 +43,10 @@
 					$rowArtist = $result3->fetch();
 					
 					//Output the submission information
-					echo "<div>";
+					echo "<div class='submission' onclick='viewSubmission(".$rowMedia['media_id'].");'>";
+					echo "<div class='image-container'>";
 					echo "<img src='".$rowMedia['media_url']."' alt='Media Submission Image'>";
+					echo "</div>";
 					echo "<p>Mural Name: ".$rowMedia['name']."</p>";
 					echo "<p>Artist Name: ".$rowArtist['username']."</p>";
 					echo "</div>";
