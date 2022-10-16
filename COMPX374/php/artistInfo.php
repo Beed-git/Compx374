@@ -61,8 +61,8 @@
 	</head>
 	<body onload="getArtistInfo()">
 		 <div class="topnav">
-			<a class="active" href="upload.php">New Submission</a>
-			<a href="artistInfo.php">Your Information</a>
+			<a href="upload.php">New Submission</a>
+			<a class="active" href="artistInfo.php">Your Information</a>
 			<a href="artistSubmissions.php">Your Submissions</a>
 			<a class="logout" href="logout.php">Log out</a>
 		</div>
