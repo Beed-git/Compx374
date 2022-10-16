@@ -80,21 +80,6 @@
 		<meta charset="UTF-8">
 		<title>Register</title>
 		<link href="../css/login.css" rel="stylesheet" type="text/css">
-		<script>
-			function toggleStoryDisplay()
-			{
-				var story = document.getElementById('story');
-				
-				if (story.style.display == "none")
-				{
-					story.style.display = "block";
-				}
-				else
-				{
-					story.style.display = "none";
-				}
-			};
-		</script>
 	</head>
 	<body>
 		<form method="post" action="" name="signup-form">
@@ -121,4 +106,4 @@
 			<p>Already have an account? <a href="../index.php">Log in</a></p>
 		</form>
 	</body>
-</html>
+</html>	
