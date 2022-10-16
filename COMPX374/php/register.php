@@ -12,12 +12,13 @@
 		$firstname = $_POST['firstname'];
 		$lastname = $_POST['lastname'];
 		$email = $_POST['email'];
-        	$password = $_POST['password'];
+        $password = $_POST['password'];
 		$confirmPassword = $_POST['confirmPassword'];
 		$story = $_POST['story'];
 		
 		//Deal with any apostrophes present in the input
-		$username = str_replace("'", "''", $username);
+		$firstname = str_replace("'", "''", $firstname);
+		$lastname = str_replace("'", "''", $lastname);
 		$story = str_replace("'", "''", $story);
 		
 		//Create username from first name and last name
