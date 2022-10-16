@@ -11,25 +11,6 @@
 		header("location: ../index.php");
 		exit;
 	}
-	
-	//Check if the form is submitted
-	if(isset($_POST['submit']))
-	{
-		//Retrieve the form data
-		$name = $_POST['name'];
-		$description = $_POST['description'];
-		
-		//Insert new competition into the database
-		$query = "insert into Competition(name, description) values('".$name."','".$description."')";		
-		$con->exec($query);
-		
-		//Get the ID of the newly created competition
-		$last_id = $con->lastInsertId();
-		
-		//Set this competition as the current competition
-		$update_query = "update Location set current_competition = ".$last_id." where name = 'anywhere'";
-		$con->query($update_query);
-	}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -37,22 +18,44 @@
 		<meta charset="UTF-8">
 		<title>New Competition</title>
 		<link href="../css/upload.css" rel="stylesheet" type="text/css">	
+		<script>
+			let confirmCompCreation = () => {
+					if (confirm("If you choose to continue, this competition will become the current competition. Do you want to proceed?")) {
+					dataArray = {name:"<?php echo $_POST['name'];?>", description:"<?php echo $_POST['description'];?>"};
+					data = JSON.stringify(dataArray);
+				
+					fetch("createCompetition.php", {method: 'post', body: data}).then(response => response.text()).then(displayResults);
+				}
+			}
+			
+			//Display the results
+			let displayResults = (response) => {
+				//Display the confirmation message
+				document.getElementById("confirmCompCreationMessage").innerHTML = response;
+				
+				//Clear the form
+				document.getElementById('name').value = '';
+				document.getElementById('description').value = '';
+			}
+		</script>
 	</head>
 	<body>
 		<div class="topnav">
+			<a href="submissions.php">Review Submissions</a>
 			<a class="active" href="newCompetition.php">New Competition</a>
-			<a href="newModerator.php">Accept New Moderator</a>
+			<a href="newModerator.php">Register New Moderator</a>
 			<a class="logout" href="logout.php">Log out</a>
 		</div> 
 		<h1>New Competition</h1>
+		<div id="confirmCompCreationMessage"></div>
 		<form action="" method="post" name="new-competition-form">
 			<div class="form-element">
 				<input type="text" id="name" name="name" placeholder="Competition Name" required />
 			</div>
 			<div class="form-element">
-				<input type="text" name="description" placeholder="Description" required />
+				<input type="text" id="description" name="description" placeholder="Description" required />
 			</div>
-			<button type="submit" name="submit" value="submit">Submit</button>
+			<button type="button" name="submit" value="submit" onclick="confirmCompCreation()">Submit</button>
 		</form>		
 	</body>
-</html>	
+</html>
