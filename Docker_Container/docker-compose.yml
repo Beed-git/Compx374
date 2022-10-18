@@ -21,6 +21,8 @@ services:
     #ports:
     #  - "31337:3004"
       # in the form "outward-facing(host):internal(container)"
+    volumes:
+      - ./COMPX374:/app
     
   web_nginx:   #So this is like the web host or whatever? My brain tired
     image: nginx:latest
@@ -28,7 +30,7 @@ services:
       - "31337:3004"
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/nginx.conf
-      - ./app:/app
+      - ./COMPX374:/app
       # in the form: hostPath:containerPath:mode
       #   where mode is read-only or read-write and I don't fully understand what this references, while it is also not compulsory
       #   
