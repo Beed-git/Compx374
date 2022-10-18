@@ -1,17 +1,17 @@
 FROM php:fpm
 
 # Create app directory
-WORKDIR /usr/src/web
+#WORKDIR /usr/src/app
 
 # Install app dependencies
 
 
 # Bundle app source
-COPY . .
+COPY /COMPX374 .
 
 
 #Expose port/s
 EXPOSE 3004
 
 #Run the actual program
-CMD [ "node", "server.js" ]
+#CMD [ "node", "server.js" ]
