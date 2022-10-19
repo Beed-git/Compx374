@@ -26,6 +26,7 @@ services:
       #- ./COMPX374/php:/var/www/html/php
       - ./info.php:/var/www/html/info.php
       - ./COMPX374:/var/www/html/
+      - ./my_sql_php.ini-production:/usr/local/etc/php/php.ini-production
     
   web_nginx:   #So this is like the web host or whatever? My brain tired
     image: nginx:latest
