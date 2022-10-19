@@ -33,6 +33,7 @@ services:
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/nginx.conf
       - ./COMPX374:/app
+      - ./info.php:/var/www/html/info.php
       # in the form: hostPath:containerPath:mode
       #   where mode is read-only or read-write and I don't fully understand what this references, while it is also not compulsory
       #   
