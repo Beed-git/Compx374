@@ -1,7 +1,7 @@
 FROM php:fpm
 
 # Create app directory
-#WORKDIR /usr/src/app
+WORKDIR /app
 
 # Install app dependencies
 #NOPE RUN npm install
