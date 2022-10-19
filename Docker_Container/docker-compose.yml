@@ -22,8 +22,8 @@ services:
     #  - "31337:3004"
       # in the form "outward-facing(host):internal(container)"
     volumes:
-      - ./COMPX374/index.php:/app/public/index.php
-      - ./COMPX374/php:/app/public/php
+      - ./COMPX374/index.php:/var/www/html/index.php
+      - ./COMPX374/php:/var/www/html/php
       - ./info.php:/var/www/html/info.php
     
   web_nginx:   #So this is like the web host or whatever? My brain tired
