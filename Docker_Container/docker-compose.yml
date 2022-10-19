@@ -24,7 +24,7 @@ services:
     volumes:
       - ./COMPX374/index.php:/app/public/index.php
       - ./COMPX374/php:/app/public/php
-      - ./info.php:/app/public/info.php
+      - ./info.php:/info.php
     
   web_nginx:   #So this is like the web host or whatever? My brain tired
     image: nginx:latest
