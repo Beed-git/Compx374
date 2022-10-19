@@ -14,10 +14,10 @@
 
 services:
   php_1:
-    build: 
-      context:  .
-      dockerfile: og_web.Dockerfile   #put path to dockerfile for web here
-    #image:
+    #build: 
+    #  context:  .
+    #  dockerfile: og_web.Dockerfile   #put path to dockerfile for web here
+    image: php:fpm
     #ports:
     #  - "31337:3004"
       # in the form "outward-facing(host):internal(container)"

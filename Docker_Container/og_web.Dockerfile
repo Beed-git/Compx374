@@ -4,7 +4,7 @@ FROM php:fpm
 #WORKDIR /usr/src/app
 
 # Install app dependencies
-RUN npm install
+#NOPE RUN npm install
 
 # Bundle app source
 COPY /COMPX374 .
