@@ -5,6 +5,8 @@ WORKDIR /app
 
 # Install app dependencies
 #NOPE RUN npm install
+#This command is provided as part of the official php package installed with the FROM above
+RUN docker-php-ext-install pdo pdo_mysql
 
 # Bundle app source
 COPY /COMPX374 .

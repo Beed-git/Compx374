@@ -22,9 +22,10 @@ services:
     #  - "31337:3004"
       # in the form "outward-facing(host):internal(container)"
     volumes:
-      - ./COMPX374/index.php:/var/www/html/index.php
-      - ./COMPX374/php:/var/www/html/php
+      #- ./COMPX374/index.php:/var/www/html/index.php
+      #- ./COMPX374/php:/var/www/html/php
       - ./info.php:/var/www/html/info.php
+      - ./COMPX374:/var/www/html/
     
   web_nginx:   #So this is like the web host or whatever? My brain tired
     image: nginx:latest
@@ -32,9 +33,10 @@ services:
       - "31337:3004"
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/nginx.conf
-      - ./COMPX374/index.php:/var/www/html/index.php
-      - ./COMPX374/php:/var/www/html/php
+      #- ./COMPX374/index.php:/var/www/html/index.php
+      #- ./COMPX374/php:/var/www/html/php
       - ./info.php:/var/www/html/info.php
+      - ./COMPX374:/var/www/html/
       # in the form: hostPath:containerPath:mode
       #   where mode is read-only or read-write and I don't fully understand what this references, while it is also not compulsory
       #   
