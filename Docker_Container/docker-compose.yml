@@ -18,8 +18,8 @@ services:
       context:  .
       dockerfile: php.Dockerfile   #path to Dockerfile
     #image: php:7.3.2-fpm
-    #ports:
-    #  - "31337:3004"
+    ports:              #}Gibraltar comment these out
+      - "31337:3004"    #}
       # in the form "outward-facing(host):internal(container)"
     volumes:
       #- ./COMPX374/index.php:/var/www/html/index.php
@@ -31,8 +31,8 @@ services:
   web_nginx:   #So this is like the web host or whatever? My brain tired
     image: nginx:latest
     ports:
-    #  - "31337:3004"
-      - "4002"  #This is the container port being exposed. automatically allocated?
+      - "31337:3004"     #Gibraltar switch these two lines (comment/uncomment)
+    #  - "4002"  #This is the container port being exposed. automatically allocated?
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/nginx.conf
       #- ./COMPX374/index.php:/var/www/html/index.php
@@ -43,15 +43,15 @@ services:
       # in the form: hostPath:containerPath:mode
       #   where mode is read-only or read-write and I don't fully understand what this references, while it is also not compulsory
       #   
-    networks:
-      - caddy
-    labels:
-      caddy.reverse_proxy: "{{upstreams 4002}}"
+    #networks:                                   #}
+    #  - caddy                                   #}Gibraltar
+    #labels:                                     #}These 4 lines
+    #  caddy.reverse_proxy: "{{upstreams 4002}}" #}
 
   api:
     build: ./WebAPI
-    #ports:
-    #  - "443:3000"
+    ports:           #}Gibraltar
+      - "443:3000"   #}These 2
 
   #reverse_proxy:
   #  image: nginx:latest
@@ -59,36 +59,38 @@ services:
   #    - "443:3007"
     # More to be said?
 
-  caddy:
-    #image: lucaslorentz/caddy-docker-proxy:ci-alpine
-    image: caddy:2.6.2  #This is the official docker one
-    #build:
-    #  context:  .
-    #  dockerfile: caddy.Dockerfile
-    ports:
-      - "80:80" #not that we use 80 rn
-      - "443:443"
-      - "31337:31337"
-    #environment:
-    #  - CADDY_INGRESS_NETWORKS=caddy
-    networks:
-      - caddy
-    volumes:  #Gotta actually get these
-      #- /var/run/docker.sock:/var/run/docker.sock
-      - $PWD/Caddyfile:/etc/caddy/Caddyfile
-      #- $PWD/site:/srv   #https://caddyserver.com/docs/running#docker-compose
-      - caddy_data:/data
-      - caddy_config:/config
-    restart: unless-stopped
+  #Gibraltar. This whole service
+  #caddy:
+  #  #image: lucaslorentz/caddy-docker-proxy:ci-alpine
+  #  image: caddy:2.6.2  #This is the official docker one
+  #  #build:
+  #  #  context:  .
+  #  #  dockerfile: caddy.Dockerfile
+  #  ports:
+  #    - "80:80" #not that we use 80 rn
+  #    - "443:443"
+  #    - "31337:31337"
+  #  #environment:
+  #  #  - CADDY_INGRESS_NETWORKS=caddy
+  #  networks:
+  #    - caddy
+  #  volumes:  #Gotta actually get these
+  #    #- /var/run/docker.sock:/var/run/docker.sock
+  #    - $PWD/Caddyfile:/etc/caddy/Caddyfile
+  #    #- $PWD/site:/srv   #https://caddyserver.com/docs/running#docker-compose
+  #    - caddy_data:/data
+  #    - caddy_config:/config
+  #  restart: unless-stopped
 
-networks:
-  caddy:
-  #  external: true
+# Gibraltar. All these networks and volumes
+#networks:
+#  caddy:
+#  #  external: true
 
-volumes:
-  caddy_data:
-  #  external: true
-  caddy_config:
+#volumes:
+#  caddy_data:
+#  #  external: true
+#  caddy_config:
 
 #  web_test:   #So this is like the web host or whatever? My brain tired
 #    image: nginx:latest
