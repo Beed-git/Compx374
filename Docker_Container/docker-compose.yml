@@ -49,8 +49,8 @@ services:
 
   api:
     build: ./WebAPI
-    ports:
-      - "443:3000"
+    #ports:
+    #  - "443:3000"
 
   #reverse_proxy:
   #  image: nginx:latest
