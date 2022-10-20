@@ -22,8 +22,8 @@ EXPOSE 3004
 #CMD [ "node", "server.js" ]
 
 #enable the mysql stuff we need
-RUN cd / \
-    cd /usr/src/php; \
-    ./configure \
-    --enable-mysqli \
-    --enable-mysql;
+#RUN cd / \
+#    cd /usr/src/php; \
+#    ./configure \
+#    --enable-mysqli \
+#    --enable-mysql;
