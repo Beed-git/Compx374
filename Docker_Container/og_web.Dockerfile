@@ -21,10 +21,9 @@ EXPOSE 3004
 #Run the actual program
 #CMD [ "node", "server.js" ]
 
-WORKDIR /
-
 #enable the mysql stuff we need
-RUN cd /usr/src/php; \
+RUN cd / \
+    cd /usr/src/php; \
     ./configure \
     --enable-mysqli \
     --enable-mysql;
