@@ -3,19 +3,14 @@ package com.google.ar.core.examples.java.helloar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.graphics.Color;
+import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
 import android.view.View;
-
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
-import android.content.Intent;
-
+import com.google.ar.core.examples.java.webapi.WebApi;
 
 
 public class StartUpActivity extends Activity {
@@ -25,6 +20,21 @@ public class StartUpActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // TODO: DELETE ME
+        System.out.println("Starting webapi!");
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                new WebApi().start("test");
+            }
+        });
+
+        //thread.start();
+        // End delete me.
+
+
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
 
