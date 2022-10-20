@@ -28,3 +28,7 @@
 
 # Refer to the Caddy docs for more information:
 # https://caddyserver.com/docs/caddyfile
+
+# Notes to self:
+# caddy is giving this warning when started:
+# "failed to sufficiently increase receive buffer size (was: 208 kiB, wanted: 2048 kiB, got: 416 kiB). See https://github.com/lucas-clemente/quic-go/wiki/UDP-Receive-Buffer-Size for details.
