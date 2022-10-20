@@ -16,7 +16,7 @@ services:
   php_1:
     build: 
       context:  .
-      dockerfile: og_web.Dockerfile   #path to Dockerfile
+      dockerfile: php.Dockerfile   #path to Dockerfile
     #image: php:7.3.2-fpm
     #ports:
     #  - "31337:3004"
@@ -30,8 +30,8 @@ services:
     
   web_nginx:   #So this is like the web host or whatever? My brain tired
     image: nginx:latest
-    ports:
-      - "31337:3004"
+    #ports:
+    #  - "31337:3004"
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/nginx.conf
       #- ./COMPX374/index.php:/var/www/html/index.php
@@ -42,17 +42,52 @@ services:
       # in the form: hostPath:containerPath:mode
       #   where mode is read-only or read-write and I don't fully understand what this references, while it is also not compulsory
       #   
+    networks:
+      - caddy
+    labels:
+      caddy.reverse_proxy: "{{upstreams 4002}}"
 
   api:
     build: ./WebAPI
     ports:
       - "443:3000"
 
-  reverse_proxy:
-    image: nginx:latest
-    ports:
-      - "80:3007"
+  #reverse_proxy:
+  #  image: nginx:latest
+  #  ports:
+  #    - "443:3007"
     # More to be said?
+
+  caddy:
+    #image: lucaslorentz/caddy-docker-proxy:ci-alpine
+    image: caddy:2.6.2  #This is the official docker one
+    #build:
+    #  context:  .
+    #  dockerfile: caddy.Dockerfile
+    ports:
+      - "80:80" #not that we use 80 rn
+      - "443:443"
+      - "31337:31337"
+    #environment:
+    #  - CADDY_INGRESS_NETWORKS=caddy
+    networks:
+      - caddy
+    volumes:  #Gotta actually get these
+      #- /var/run/docker.sock:/var/run/docker.sock
+      - $PWD/Caddyfile:/etc/caddy/Caddyfile
+      - $PWD/site:/srv
+      - caddy_data:/data
+      - caddy_config:/config
+    restart: unless-stopped
+
+networks:
+  caddy:
+    external: true
+
+volumes:
+  caddy_data:
+    external: true
+  caddy_config:
 
 #  web_test:   #So this is like the web host or whatever? My brain tired
 #    image: nginx:latest
@@ -93,8 +128,8 @@ services:
 # don't affect the real database on your file system...
 # for development/testing
 #Volumes is a special kind of volume that isn't linked
-#volumes:
-#  mysqldata: {}
+
+
 
 # Things to consider checking in the docs
 #   hostname
