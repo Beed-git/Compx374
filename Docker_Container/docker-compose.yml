@@ -17,7 +17,7 @@ services:
     #build: 
     #  context:  .
     #  dockerfile: og_web.Dockerfile   #put path to dockerfile for web here
-    image: php:fpm
+    image: php:7.3.2-fpm
     #ports:
     #  - "31337:3004"
       # in the form "outward-facing(host):internal(container)"
