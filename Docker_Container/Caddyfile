@@ -12,7 +12,22 @@
 
 # tuakiri.trex-sandwich.com 
 
-:31337, tuakiri.trex-sandwich.com:31337 {
+# "If a request matches multiple site blocks, the site block with the most specific matching address is chosen. Requests don't cascade into to other site blocks."
+tuakiri.trex-sandwich.com/api {
+	# Set this path to your site's directory.
+	root * /var/www/html
+
+	# Enable the static file server.
+	#file_server
+
+	# Another common task is to set up a reverse proxy:
+	reverse_proxy localhost:3000
+
+	# Or serve a PHP site through php-fpm:
+	# php_fastcgi localhost:9000
+}
+# Above is hopefully API, below is hopefully web
+tuakiri.trex-sandwich.com {
 	# Set this path to your site's directory.
 	root * /var/www/html
 

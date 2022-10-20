@@ -30,8 +30,9 @@ services:
     
   web_nginx:   #So this is like the web host or whatever? My brain tired
     image: nginx:latest
-    #ports:
+    ports:
     #  - "31337:3004"
+      - "4002"  #This is the container port being exposed. automatically allocated?
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/nginx.conf
       #- ./COMPX374/index.php:/var/www/html/index.php
@@ -75,7 +76,7 @@ services:
     volumes:  #Gotta actually get these
       #- /var/run/docker.sock:/var/run/docker.sock
       - $PWD/Caddyfile:/etc/caddy/Caddyfile
-      - $PWD/site:/srv
+      #- $PWD/site:/srv   #https://caddyserver.com/docs/running#docker-compose
       - caddy_data:/data
       - caddy_config:/config
     restart: unless-stopped
