@@ -86,7 +86,7 @@ networks:
 
 volumes:
   caddy_data:
-    external: true
+  #  external: true
   caddy_config:
 
 #  web_test:   #So this is like the web host or whatever? My brain tired
