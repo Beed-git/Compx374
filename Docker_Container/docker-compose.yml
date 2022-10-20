@@ -18,8 +18,8 @@ services:
       context:  .
       dockerfile: php.Dockerfile   #path to Dockerfile
     #image: php:7.3.2-fpm
-    ports:              #}Gibraltar comment these out
-      - "31337:3004"    #}
+    #ports:
+    #  - "31337:3004"
       # in the form "outward-facing(host):internal(container)"
     volumes:
       #- ./COMPX374/index.php:/var/www/html/index.php
