@@ -1,0 +1,141 @@
+ls
+Routes:
+
+{
+	"id":NUM,
+	"email":"STRING",
+	"username":"STRING",
+	"password":"STRING",
+	"story":"STRING",
+}
+
+CR -> /artists
+RUD -> /artist/id=NUM 
+RUD -> /artist/email="STRING"
+
+CR -> /moderators
+RUD -> /moderator/id=NUM
+RUD -> /moderator/email="STRING"
+
+CR -> /content
+RUD -> /content/id=NUM
+RUD -> /content/artist=NUM
+
+
+Displays? Murals?
+CR -> /murals
+RUD -> /mural/id=NUM
+RUD -> /display/artist=NUM
+
+
+Artist:
+	Id
+	Email
+Moderator:
+	Id
+	Email
+Content:
+	Id
+Media:
+	Id
+	Name
+	Artist
+	
+	
+var content =  GET(asdf.com/content/id=123);
+var image = url.download(content.url);
+
+scale x, y, z is a proportion of the minimum of the width and height.
+
+E.G. if the width is 1.5m and the height is 2.5m, our minimum is 1.5m
+With a scale x,y,z of 1, 1, 1 the mesh would be scaled to 1.5, 1.5, 1.5.
+
+Content/media connection table
+
+
+Content:
+{
+	"id":NUM,
+	"artist": NUM, // The artist who uploaded the media.
+	"url":"URL", // This will be supplied during the upload image phase. Should be unique, UUID? E.g. /content/bp66/F732E2AB1239C.png
+	"name":"STRING" // Doesn't need to be unique.
+	"description":"STRING"
+}
+
+
+Media:
+{
+	"content_key":NUM
+	"video_key":NUM 
+	"x":NUM // -1 to 1
+	"y":NUM // -1 to 1
+	"z":NUM // Distance from wall, in proportion to width/height of mural/display.	
+	"scale_x":NUM
+	"scale_y":NUM
+	"scale_z":NUM // If content is an image this field will be ignored.
+}
+
+VIDEO:
+{
+	"framerate":NUM // How many frames are used every second.
+	"loop":BOOL? // if 1, video loops when reaching the end, otherwise the video stops?
+}
+
+
+// Model
+model_name.obj
+model_texture.png
+
+// Image
+cool_image.png
+
+// Videos
+cool_video.mp4
+
+int count = 0;
+while (true)
+{
+	if (timepassed = 1 / fps)
+	{
+		Bitmap frame = MetadataRetriever.getFrameAtIndex(count);
+		count++;
+		send_to_gl(frame);
+	}
+}
+
+
+
+this **should** work
+
+// Prepare all media -> convert to meshes, scale and position them.
+
+foreach(media in display)
+{
+	create anchor in center of 'mural'. Use this as the default pose?
+	if (video or image)
+	{
+		create a 1x1m plane.
+		attach texture/video.
+		(DONT START VIDEO YET)
+	}
+	else (is mesh)
+	{
+		load mesh
+		if (mesh has texture)
+		{
+			attach corresponding texture
+		}
+	}
+	scale mesh by scale_x,y,z.
+	offset in mdoel space the media using the -1 to 1 coordinate system.
+}
+
+// start all videos after this. (maybe wait half a second after loading before starting videos?)
+
+sleep(0.5s);
+
+foreach (var media in display)
+{
+	if (media is Video video)
+		video.start();
+}
