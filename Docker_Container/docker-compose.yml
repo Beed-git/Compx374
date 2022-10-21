@@ -57,8 +57,9 @@ services:
 
   api:
     build: ./WebAPI
-    #ports:           #}Gibraltar
+    ports:           #}Gibraltar
     #  - "443:3000"   #}These 2
+      - "4004"
     networks:
       - caddy
     labels:
