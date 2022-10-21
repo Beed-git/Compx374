@@ -65,7 +65,7 @@ services:
       caddy: tuakiri.trex-sandwich.com  #I don't think api.tuakiri.t... is an option btw
       caddy.handle: /api/*
       #caddy.reverse_proxy: "{{upstreams 4004}}"
-      caddy.reverse_proxy: "api:3000"
+      caddy.reverse_proxy: "api:4004"
 
   #Gibraltar. This whole service
   caddy:
