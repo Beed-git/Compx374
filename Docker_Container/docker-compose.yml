@@ -18,8 +18,9 @@ services:
       context:  .
       dockerfile: php.Dockerfile   #path to Dockerfile
     #image: php:7.3.2-fpm
-    #ports:
+    ports:
     #  - "31337:3004"
+      - "4002"
       # in the form "outward-facing(host):internal(container)"
     volumes:
       #- ./COMPX374/index.php:/var/www/html/index.php
