@@ -20,7 +20,7 @@ services:
     #image: php:7.3.2-fpm
     ports:
     #  - "31337:3004"
-      - 9000
+      - "9000"
       # in the form "outward-facing(host):internal(container)"
     volumes:
       #- ./COMPX374/index.php:/var/www/html/index.php
