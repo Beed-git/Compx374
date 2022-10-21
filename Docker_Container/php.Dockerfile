@@ -20,12 +20,3 @@ EXPOSE 3004
 # I have no idea man maybe they both need to be on the same port since I may have accidentally done that initially...
 EXPOSE 4002 
 
-#Run the actual program
-#CMD [ "node", "server.js" ]
-
-#enable the mysql stuff we need
-#RUN cd / \
-#    cd /usr/src/php; \
-#    ./configure \
-#    --enable-mysqli \
-#    --enable-mysql;
