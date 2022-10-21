@@ -18,7 +18,7 @@ require("./app/routes.js")(app);
 // log a simple message to the server console. Any console.log() statements in your Node.js code
 // can be seen in the terminal window used to run the server.
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 4004;
 
 app.listen(PORT, () => {
   console.log(`CORS enabled Express web server is running on port ${PORT}.`);

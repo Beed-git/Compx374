@@ -16,7 +16,7 @@ RUN docker-php-ext-install pdo pdo_mysql
 
 
 #Expose port/s
-EXPOSE 3004
+#EXPOSE 3004
 # I have no idea man maybe they both need to be on the same port since I may have accidentally done that initially...
 EXPOSE 4002 
 

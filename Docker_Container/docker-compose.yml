@@ -56,7 +56,7 @@ services:
     networks:
       - caddy
     labels:
-      caddy: tuakiri.trex-sandwich.com/api
+      caddy: api.tuakiri.trex-sandwich.com
       caddy.reverse_proxy: "{{upstreams 4004}}"
 
   #Gibraltar. This whole service
