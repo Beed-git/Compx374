@@ -28,15 +28,16 @@ services:
       - ./info.php:/var/www/html/info.php
       - ./COMPX374:/var/www/html/
       - ./my_sql_php.ini-production:/usr/local/etc/php/php.ini-production
-    
+      #I can't remember but I think the single line above may not be needed any more? Since we got it sorted in the Dockerfile?
+
   web_nginx:   #So this is like the web host or whatever? My brain tired
     image: nginx:latest
     ports:
     #  - "31337:3004"     #Gibraltar switch these two lines (comment/uncomment)
       - "4003"  #This is the container port being exposed. automatically allocated?
-    #links:
-    #  - php
     depends_on:
+      - php
+    links:
       - php
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/nginx.conf
