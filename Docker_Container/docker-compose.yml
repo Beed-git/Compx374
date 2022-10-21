@@ -13,7 +13,7 @@
 # We DON'T need a MySQL database paired with the PHP
 
 services:
-  php_1:
+  php:
     build: 
       context:  .
       dockerfile: php.Dockerfile   #path to Dockerfile
@@ -34,8 +34,10 @@ services:
     #ports:
     #  - "31337:3004"     #Gibraltar switch these two lines (comment/uncomment)
     #  - "4003"  #This is the container port being exposed. automatically allocated?
-    links:
-      - php_1
+    #links:
+    #  - php
+    depends_on:
+      - php
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/nginx.conf
       #- ./COMPX374/index.php:/var/www/html/index.php
@@ -70,6 +72,9 @@ services:
     #build:
     #  context:  .
     #  dockerfile: caddy.Dockerfile
+    depends_on:
+      - api
+      - web_nginx
     ports:
       - "80:80" #not that we use 80 rn
       - "443:443"
