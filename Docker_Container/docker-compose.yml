@@ -33,7 +33,7 @@ services:
   web_nginx:   #So this is like the web host or whatever? My brain tired
     image: nginx:latest
     ports:
-    #  - "31337:3004"     #Gibraltar switch these two lines (comment/uncomment)
+      - "31337:3004"     #Gibraltar switch these two lines (comment/uncomment)
       - "4003"  #This is the container port being exposed. automatically allocated?
     depends_on:
       - php
