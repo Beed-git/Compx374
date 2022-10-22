@@ -1,17 +1,5 @@
 #Apparently no longer ideal to define a version
 
-#There's lots of test stuff, including the volumes section, that are just there as I'm following a tutorial
-
-# Ok so bear with me
-# I think we need 4 different containers (if the database were to move to this server, 3 if not)
-# For the following:
-# - PHP script-runner
-# - NGINX ?host? thing to access PHP-script based website
-# - WebAPI
-# - (Database if it's on this server)
-# - Reverse proxy to act as entry to all of them
-# We DON'T need a MySQL database paired with the PHP
-
 services:
   php:
     build: 
@@ -20,14 +8,15 @@ services:
     #image: php:7.3.2-fpm
     ports:
     #  - "31337:9000"
-      - "9000"
+      #- "9000"
+      - "4004"
       # in the form "outward-facing(host):internal(container)"
     volumes:
       #- ./COMPX374/index.php:/var/www/html/index.php
       #- ./COMPX374/php:/var/www/html/php
       - ./info.php:/var/www/html/info.php
       - ./COMPX374:/var/www/html/
-      - ./my_sql_php.ini-production:/usr/local/etc/php/php.ini-production
+      #- ./my_sql_php.ini-production:/usr/local/etc/php/php.ini-production
       #I can't remember but I think the single line above may not be needed any more? Since we got it sorted in the Dockerfile?
 
   web_nginx:   #So this is like the web host or whatever? My brain tired
@@ -86,7 +75,7 @@ services:
       - api
       - web_nginx
     ports:
-      - "80:80" #not that we use 80 rn
+      - "80:80"
       - "443:443"
       #- "31337:31337"
     environment:
@@ -108,70 +97,3 @@ networks:
 
 volumes:
   caddy_data: {}
-
-#  caddy_incorrect:
-#    image: caddy:2.6.2  #This is the official docker one
-#    ports:
-#      - "80:80" #not that we use 80 rn
-#      - "443:443"
-#      - "443:443/udp"
-#      - "31337:31337"
-#    volumes:  
-#      - $PWD/Caddyfile:/etc/caddy/Caddyfile
-#      #- $PWD/site:/srv   #https://caddyserver.com/docs/running#docker-compose
-#      - caddy_data:/data
-#      - caddy_config:/config
-#volumes:
-#  caddy_data:
-#  #  external: true
-#  caddy_config:
-
-
-
-#  web_test:   #So this is like the web host or whatever? My brain tired
-#    image: nginx:latest
-#    ports:
-#      - "443:3004"
-#    volumes:
-#      - ./nginx.conf:/etc/nginx/conf.d/nginx.conf
-#      - ./app:/app
-#      # in the form: hostPath:containerPath:mode
-#      #   where mode is read-only or read-write and I don't fully understand what this references, while it is also not compulsory
-#      #   
-#  php_test:   #And this is... the thing that runs php scripts...
-#    #image: php:fpm    #fpm is necessary if using nginx (FastCGI Process Manager)
-#    # not using a specific version (php:8.0-fpm) uses the latest
-#    
-#    build: 
-#      context: .
-#      dockerfile: PHP.Dockerfile
-#    volumes:
-#      - ./app:/app
-#  mysql_test:
-#    image: mariadb:latest
-#    environment:
-#      #Root password for managing db
-#      MYSQL_ROOT_PASSWORD: 'secret'
-#      # login for mysql user with limited permission. The one you'll use from the php files
-#      MYSQL_USER: 'tutorial'
-#      MYSQL_PASSWORD: 'secret'
-#      # Name of a schema that'll be created, which that ^^ user has access to
-#      MYSQL_DATABASE: 'tutorial'
-#    volumes:
-#      - mysqldata:/var/lib/mysql
-#    ports:    #For connecting to a client such as MySQL Workbench for managing the database (not set up). PHPMyAdmin is another option but the author recommended against it
-#      - 3306:3306
-#
-#This creates a different database that's not linked to
-# the existing local file system, so that edits in the live server 
-# don't affect the real database on your file system...
-# for development/testing
-#Volumes is a special kind of volume that isn't linked
-
-
-
-# Things to consider checking in the docs
-#   hostname
-#   logging
-#   restart
-#   volumes (can be used across multiple services)
