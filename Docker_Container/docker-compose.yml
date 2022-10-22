@@ -18,6 +18,7 @@ services:
       - ./COMPX374:/var/www/html/
       #- ./my_sql_php.ini-production:/usr/local/etc/php/php.ini-production
       #I can't remember but I think the single line above may not be needed any more? Since we got it sorted in the Dockerfile?
+    restart: unless-stopped
 
   web_nginx:   #So this is like the web host or whatever? My brain tired
     image: nginx:latest
@@ -45,7 +46,8 @@ services:
     #  caddy: tuakiri.trex-sandwich.com
       #caddy.reverse_proxy: "{{upstreams 4003}}" #}
     #  caddy.reverse_proxy: "web_nginx:4003"
-    restart: on-failure
+    #restart: on-failure
+    restart: unless-stopped
 
   api:
     build: ./WebAPI
@@ -63,6 +65,7 @@ services:
       #Why won't you recognise my changes git?
       caddy.1_handle: /*
       caddy.1_handle.reverse_proxy: "web_nginx:4003"
+    restart: unless-stopped
 
   #Gibraltar. This whole service
   caddy:
