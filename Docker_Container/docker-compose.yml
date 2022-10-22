@@ -33,7 +33,7 @@ services:
   web_nginx:   #So this is like the web host or whatever? My brain tired
     image: nginx:latest
     ports:
-      - "31337:3004"     #Gibraltar switch these two lines (comment/uncomment)
+      - "31337:4003"     #Gibraltar switch these two lines (comment/uncomment)
       - "4003"  #This is the container port being exposed. automatically allocated?
     depends_on:
       - php
@@ -55,11 +55,12 @@ services:
     #  caddy: tuakiri.trex-sandwich.com
       #caddy.reverse_proxy: "{{upstreams 4003}}" #}
     #  caddy.reverse_proxy: "web_nginx:4003"
+    restart: on-failure
 
   api:
     build: ./WebAPI
     ports:           #}Gibraltar
-      - "443:3000"   #}These 2
+      - "443:4004"   #}These 2
       - "4004"
     #networks:
     #  - caddy

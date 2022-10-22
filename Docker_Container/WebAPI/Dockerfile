@@ -20,8 +20,9 @@ RUN npm install
 COPY . .
 
 #This is the internal port server.js is currently set up to listen on
-ENV PORT=3000
+ENV PORT=4004
 
 #
-EXPOSE 3000
+#EXPOSE 3000
+EXPOSE 4004
 CMD [ "node", "server.js" ]
