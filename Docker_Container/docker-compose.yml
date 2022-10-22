@@ -52,10 +52,10 @@ services:
     networks:                                   #}
       - caddy                                   #}Gibraltar
       - default
-    labels:                                     #}These 4 lines
-      caddy: tuakiri.trex-sandwich.com
+    #labels:                                     #}These 4 lines
+    #  caddy: tuakiri.trex-sandwich.com
       #caddy.reverse_proxy: "{{upstreams 4003}}" #}
-      caddy.reverse_proxy: "web_nginx:4003"
+    #  caddy.reverse_proxy: "web_nginx:4003"
     restart: on-failure
 
   api:
@@ -67,9 +67,11 @@ services:
       - caddy
     labels:
       caddy: tuakiri.trex-sandwich.com  #I don't think api.tuakiri.t... is an option btw
-      caddy.handle: /api/*
+      caddy.handle_0: /api/*
       #caddy.reverse_proxy: "{{upstreams 4004}}"
-      caddy.reverse_proxy: "api:4004"
+      caddy.handle_0.reverse_proxy: "api:4004"
+      caddy.handle_1: /*
+      caddy.handle_1.reverse_proxy: "web_nginx:4003"
 
   #Gibraltar. This whole service
   caddy:
