@@ -51,6 +51,7 @@ services:
       #   
     networks:                                   #}
       - caddy                                   #}Gibraltar
+      - docker_container_default
     labels:                                     #}These 4 lines
       caddy: tuakiri.trex-sandwich.com
       #caddy.reverse_proxy: "{{upstreams 4003}}" #}
