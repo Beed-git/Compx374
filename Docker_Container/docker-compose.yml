@@ -34,7 +34,7 @@ services:
       #- ./COMPX374/php:/var/www/html/php
       - ./info.php:/var/www/html/info.php
       - ./COMPX374:/var/www/html/
-      - ./my_sql_php.ini-production:/usr/local/etc/php/php.ini-production
+      #- ./my_sql_php.ini-production:/usr/local/etc/php/php.ini-production
       # in the form: hostPath:containerPath:mode
       #   where mode is read-only or read-write and I don't fully understand what this references, while it is also not compulsory
       #   
