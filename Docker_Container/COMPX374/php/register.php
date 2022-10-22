@@ -17,7 +17,8 @@
 		$story = $_POST['story'];
 		
 		//Deal with any apostrophes present in the input
-		$username = str_replace("'", "''", $username);
+		$firstname = str_replace("'", "''", $firstname);
+		$lastname = str_replace("'", "''", $lastname);
 		$story = str_replace("'", "''", $story);
 		
 		//Create username from first name and last name
@@ -46,42 +47,21 @@
 				//Check that the password is the same as the confirmation password
 				if ($password == $confirmPassword)
 				{
-					if(isset($_POST['user_type']) && $_POST['user_type'] == 'Moderator')
-					{
-						//Insert new user into the database
-						$moderatorQuery = "insert into Moderator(email,username,password) values('".$email."','".$username."','".$hashed_password."')";
-						$result2 = $con->query($moderatorQuery);
+					//Insert new user into the database
+					$artistQuery = "insert into Artist(email,username,password,story) values('".$email."','".$username."','".$hashed_password."','".$story."')";
+					$result2 = $con->query($artistQuery);
 			
-						if ($result2)
-						{
-							$_SESSION["loggedin"] = true;
-							$_SESSION['email'] = $email;
-							header("Location: newCompetition.php");
-						}
-						//Otherwise, display an error message
-						else
-						{
-							echo '<div class="error"><p>Error in database query.</p></div>';
-						}
+					if ($result2)
+					{
+						$_SESSION["loggedin"] = true;
+						$_SESSION['email'] = $email;
+						header("Location: upload.php");
 					}
+					//Otherwise, display an error message
 					else
 					{
-						//Insert new user into the database
-						$artistQuery = "insert into Artist(email,username,password,story) values('".$email."','".$username."','".$hashed_password."','".$story."')";
-						$result2 = $con->query($artistQuery);
-			
-						if ($result2)
-						{
-							$_SESSION["loggedin"] = true;
-							$_SESSION['email'] = $email;
-							header("Location: upload.php");
-						}
-						//Otherwise, display an error message
-						else
-						{
-							echo '<div class="error"><p>Error in database query.</p></div>';
-						}
-					}
+						echo '<div class="error"><p>Error in database query.</p></div>';
+					}	
 				}
 				else
 				{
@@ -101,21 +81,6 @@
 		<meta charset="UTF-8">
 		<title>Register</title>
 		<link href="../css/login.css" rel="stylesheet" type="text/css">
-		<script>
-			function toggleStoryDisplay()
-			{
-				var story = document.getElementById('story');
-				
-				if (story.style.display == "none")
-				{
-					story.style.display = "block";
-				}
-				else
-				{
-					story.style.display = "none";
-				}
-			};
-		</script>
 	</head>
 	<body>
 		<form method="post" action="" name="signup-form">
@@ -137,10 +102,6 @@
 			</div>
 			<div class="form-element">
 				<textarea name="story" id="story" placeholder="Story" cols="50" rows="10" maxlength="500"></textarea>
-			</div>
-			<div class="form-element">
-				<input type="checkbox" name="user_type" onchange="toggleStoryDisplay()" value="Moderator">
-				<label for="user_type">Moderator</label><br>
 			</div>			
 			<button type="submit" name="register" value="register">Register</button>
 			<p>Already have an account? <a href="../index.php">Log in</a></p>
