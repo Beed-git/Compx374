@@ -67,11 +67,12 @@ services:
       - caddy
     labels:
       caddy: tuakiri.trex-sandwich.com  #I don't think api.tuakiri.t... is an option btw
-      caddy.handle_0: /api/*
+      caddy.0_handle: /api/*
       #caddy.reverse_proxy: "{{upstreams 4004}}"
-      caddy.handle_0.reverse_proxy: "api:4004"
-      caddy.handle_1: /*
-      caddy.handle_1.reverse_proxy: "web_nginx:4003"
+      # Just a note: upstreams is a template that returns the addresses of all current Docker resources. should work, might be better, but I had some issues
+      caddy.0_handle.reverse_proxy: "api:4004"
+      caddy.1_handle: /*
+      caddy.1_handle.reverse_proxy: "web_nginx:4003"
 
   #Gibraltar. This whole service
   caddy:
