@@ -9,7 +9,7 @@ services:
     ports:
     #  - "31337:9000"
       #- "9000"
-      - "4004"
+      - "4002"
       # in the form "outward-facing(host):internal(container)"
     volumes:
       #- ./COMPX374/index.php:/var/www/html/index.php
