@@ -1,11 +1,20 @@
 package com.google.ar.core.examples.java.webapi;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
+import com.google.ar.core.examples.java.common.rendering.ImageBuffer;
+import com.google.ar.core.examples.java.common.rendering.ImageTexture;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -35,5 +44,12 @@ public class WebApi {
         } else {
             throw new Exception("Response failed, error code: " + connection.getResponseCode());
         }
+    }
+
+    public Bitmap getImageFromURL(String uri) throws IOException {
+        URL url = new URL(uri);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        Bitmap bitmap = BitmapFactory.decodeStream(new BufferedInputStream(connection.getInputStream()));
+        return bitmap;
     }
 }

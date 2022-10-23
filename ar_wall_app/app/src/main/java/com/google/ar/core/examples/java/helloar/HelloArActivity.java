@@ -74,6 +74,7 @@ import com.google.ar.core.examples.java.common.samplerender.Texture;
 import com.google.ar.core.examples.java.common.samplerender.arcore.BackgroundRenderer;
 import com.google.ar.core.examples.java.common.samplerender.arcore.PlaneRenderer;
 import com.google.ar.core.examples.java.common.samplerender.arcore.SpecularCubemapFilter;
+import com.google.ar.core.examples.java.webapi.WebApiThread;
 import com.google.ar.core.exceptions.CameraNotAvailableException;
 import com.google.ar.core.exceptions.NotYetAvailableException;
 import com.google.ar.core.exceptions.UnavailableApkTooOldException;
@@ -91,6 +92,7 @@ import java.nio.ByteBuffer;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.Future;
 
 /**
  * This is a simple example that shows how to create an augmented reality (AR) application using the
@@ -406,10 +408,8 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
 
       //URL url = new URL("https://commons.wikimedia.org/wiki/Earth#/media/File:The_Blue_Marble_(remastered).jpg");
       try {
-        URL url = new URL("https://i.imgur.com/Mbi3wti.jpeg");
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        Bitmap bitmap = BitmapFactory.decodeStream(new BufferedInputStream(connection.getInputStream()));
-        ImageBuffer imageBuffer = ImageBuffer.fromBitmap(bitmap);
+        Future<Bitmap> bitmap = WebApiThread.getInstance().getImageFromURL("https://i.imgur.com/Mbi3wti.jpeg");
+        ImageBuffer imageBuffer = ImageBuffer.fromBitmap(bitmap.get());
         downloadedImageTexture = ImageTexture.createFromBuffer(imageBuffer);
       } catch (Exception ex) {
         messageSnackbarHelper.showError(this, "Failed to load an image.");

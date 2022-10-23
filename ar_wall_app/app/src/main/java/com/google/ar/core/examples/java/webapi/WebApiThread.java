@@ -1,5 +1,7 @@
 package com.google.ar.core.examples.java.webapi;
 
+import android.graphics.Bitmap;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -15,6 +17,10 @@ public class WebApiThread {
 
     public synchronized <T> Future<T> get(String uri, String accessToken, Class<T> tClass) throws Exception {
         return executorService.submit(() -> webApi.get(uri, accessToken, tClass));
+    }
+
+    public synchronized Future<Bitmap> getImageFromURL(String uri) {
+        return executorService.submit(() -> webApi.getImageFromURL(uri));
     }
 
     private static WebApiThread instance;
