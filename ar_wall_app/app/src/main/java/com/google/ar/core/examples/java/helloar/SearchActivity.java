@@ -10,7 +10,12 @@ public class SearchActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        System.out.println(("Hi Brad"));
+        //System.out.println(("Hi Brad"));
         setContentView(R.layout.activity_search);
     }
+
+    //Fetch images from server "http...."
+    //Assign an image to each imagebutton
+    //onButtonClick get image id
+    //
 }
