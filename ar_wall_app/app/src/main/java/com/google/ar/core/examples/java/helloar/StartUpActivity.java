@@ -11,9 +11,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.ar.core.examples.java.webapi.WebApi;
-import com.google.ar.core.examples.java.webapi.models.Media;
-import com.google.ar.core.examples.java.webapi.models.MediaCollection;
-
+import com.google.ar.core.examples.java.webapi.models.*;
 
 public class StartUpActivity extends Activity {
 
@@ -25,15 +23,14 @@ public class StartUpActivity extends Activity {
         // TODO: DELETE ME
         System.out.println("Starting webapi!");
         new Thread(() -> {
-            String url = "https://tuakiri.trex-sandwich.com/api/media/";
+            String url = "https://tuakiri.trex-sandwich.com/api/moderators";
             String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2NhdGlvbiI6ImFueXdoZXJlIiwiaWF0IjoxNjY1NTIyMjc1fQ.DLmaU9h7LBLV8uxdhQXJBgOUS3QjDZOVkb8gQShVgBI";
-
             WebApi api = new WebApi();
 
             try {
-                MediaCollection collection = api.get(url, token, MediaCollection.class);
-                for (Media m : collection.media) {
-                    System.out.println(m);
+                ModeratorCollection mods = api.get(url, token, ModeratorCollection.class);
+                for (Moderator mod : mods.moderators) {
+                    System.out.println(mod);
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
