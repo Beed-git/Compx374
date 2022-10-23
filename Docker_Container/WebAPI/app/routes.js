@@ -1,8 +1,11 @@
 module.exports = app => {
 	const artists = require("./controllers/artists.controller");
 	const competitions = require("./controllers/competition.controller");
+	const displays = require("./controllers/display.controller");
 	const moderators = require("./controllers/moderators.controller");
 	const media = require("./controllers/media.controller");
+	const mediaInstance = require("./controllers/media_instance.controller");
+
 	const auth = require("./auth");
 
 	const args = process.argv.slice(2);
@@ -36,4 +39,10 @@ module.exports = app => {
 
 	app.get("/competitions", auth.verifyToken, competitions.getCompetitions);
 	app.get("/competitions/:id", auth.verifyToken, competitions.getCompetitionById);
+
+	app.get("/displays", auth.verifyToken, displays.getDisplayQuery);
+	app.get("/displays/:id", auth.verifyToken, displays.getDisplayById);
+
+	app.get("/media_instances", auth.verifyToken, mediaInstance.getMediaInstanceQuery);
+	app.get("/media_instances/:id", auth.verifyToken, mediaInstance.getMediaInstanceById);
 }
