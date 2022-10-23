@@ -1,8 +1,8 @@
 package com.google.ar.core.examples.java.webapi;
 
-import android.util.JsonReader;
-
+import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -11,27 +11,29 @@ import java.net.URL;
 import javax.net.ssl.HttpsURLConnection;
 
 public class WebApi {
-    static final String ApiWebURL = "https://tuakiri.trex-sandwich.com:443/";
+    private Gson gson;
 
-    public void start(String accessToken) {
-        try {
-            URL url = new URL(ApiWebURL);
-            HttpsURLConnection connection = (HttpsURLConnection)url.openConnection();
+    public WebApi() {
+        this.gson = new GsonBuilder()
+                .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+                .create();
+    }
 
-            connection.setRequestProperty("x-access-token", accessToken);
+    public <T> T get(String uri, String accessToken, Class<T> tClass) throws Exception{
+        URL url = new URL(uri);
+        HttpsURLConnection connection = (HttpsURLConnection)url.openConnection();
 
-            if (connection.getResponseCode() == 200) {
-                InputStream stream = connection.getInputStream();
-                InputStreamReader reader = new InputStreamReader(stream);
+        connection.setRequestProperty("x-access-token", accessToken);
 
-                connection.disconnect();
-            }
+        if (connection.getResponseCode() == 200) {
+            InputStream stream = connection.getInputStream();
+            InputStreamReader reader = new InputStreamReader(stream);
 
-            else {
-                throw new Exception("Response failed, error code: " + connection.getResponseCode());
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
+            T result = this.gson.fromJson(reader, tClass);
+            connection.disconnect();
+            return result;
+        } else {
+            throw new Exception("Response failed, error code: " + connection.getResponseCode());
         }
     }
 }

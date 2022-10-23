@@ -11,7 +11,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.ar.core.examples.java.webapi.WebApi;
-
+import com.google.ar.core.examples.java.webapi.WebApiThread;
+import com.google.ar.core.examples.java.webapi.models.*;
 
 public class StartUpActivity extends Activity {
 
@@ -20,18 +21,17 @@ public class StartUpActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // TODO: DELETE ME
-        System.out.println("Starting webapi!");
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                new WebApi().start("test");
+        String url = "https://tuakiri.trex-sandwich.com/api/moderators";
+        String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2NhdGlvbiI6ImFueXdoZXJlIiwiaWF0IjoxNjY1NTIyMjc1fQ.DLmaU9h7LBLV8uxdhQXJBgOUS3QjDZOVkb8gQShVgBI";
+
+        try {
+            ModeratorCollection mods = WebApiThread.getInstance().get(url, token, ModeratorCollection.class).get();
+            for (Moderator mod : mods.moderators) {
+                System.out.println(mod);
             }
-        });
-
-        //thread.start();
-        // End delete me.
-
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
 
 
 
