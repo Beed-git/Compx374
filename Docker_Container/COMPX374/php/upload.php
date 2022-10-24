@@ -16,15 +16,20 @@
 	if(isset($_POST['submit']))
 	{
 		//Retrieve the form data
-		$file_upload = $_POST['file_upload'];
+		$file_upload = $_POST['fileToUpload'];
     $name = $_POST['name'];
 		$description = $_POST['description'];
 		
 		//Save the image to the server !!TO BE COMPLETED!!
-    $media_url = '../images/'.uniqid();
     $uploadOk = 1;
     $originalName = basename($_FILES["fileToUpload"]["name"]);
     $imageFileType = strtolower(pathinfo($originalName,PATHINFO_EXTENSION));
+    $media_url = '../images/'.uniqid().'.'.$imageFileType;
+    
+    //$target_dir = "../images/";
+    //$media_url = $target_dir . basename($_FILES["fileToUpload"]["name"]);
+    //$uploadOk = 1;
+    //$imageFileType = strtolower(pathinfo($media_url,PATHINFO_EXTENSION));
 
     //Check if image file is an actual image or a fake image
     if(isset($_POST["submit"]))
@@ -59,7 +64,7 @@
     //Allow certain file formats
     if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" && $imageFileType != "gif" )
     {
-      echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+      echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";      
       $uploadOk = 0;
     }
 
@@ -71,6 +76,10 @@
     }
     else
     {
+      echo "<p>".$_FILES["fileToUpload"]["name"]."</p>";
+      echo "<p>".$media_url."</p>";
+      
+      //if(copy($_FILES['fileToUpload']['tmp_name'], $media_url))
       if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $media_url))
       {
         //echo "The file ". htmlspecialchars( basename( $_FILES["fileToUpload"]["name"])). " has been uploaded.";
@@ -105,7 +114,7 @@
       }
       else
       {
-        echo "Sorry, there was an error uploading your file.";
+        echo "Sorry, there was an error uploading your file.".$_FILES['fileToUpload']['error'];
       }
     }
   }
@@ -160,4 +169,4 @@
 			</div>
 		</div>
 	</body>
-</html>
+</html>	
