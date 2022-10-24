@@ -19,7 +19,6 @@ package com.google.ar.core.examples.java.helloar;
 import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.media.Image;
 import android.opengl.GLES30;
 import android.opengl.GLSurfaceView;
@@ -32,6 +31,7 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -75,6 +75,7 @@ import com.google.ar.core.examples.java.common.samplerender.arcore.BackgroundRen
 import com.google.ar.core.examples.java.common.samplerender.arcore.PlaneRenderer;
 import com.google.ar.core.examples.java.common.samplerender.arcore.SpecularCubemapFilter;
 import com.google.ar.core.examples.java.webapi.WebApiThread;
+import com.google.ar.core.examples.java.webapi.models.*;
 import com.google.ar.core.exceptions.CameraNotAvailableException;
 import com.google.ar.core.exceptions.NotYetAvailableException;
 import com.google.ar.core.exceptions.UnavailableApkTooOldException;
@@ -83,14 +84,13 @@ import com.google.ar.core.exceptions.UnavailableDeviceNotCompatibleException;
 import com.google.ar.core.exceptions.UnavailableSdkTooOldException;
 import com.google.ar.core.exceptions.UnavailableUserDeclinedInstallationException;
 
-import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.Future;
 
@@ -100,6 +100,7 @@ import java.util.concurrent.Future;
  * plane to place a 3D model.
  */
 public class HelloArActivity extends AppCompatActivity implements SampleRender.Renderer {
+  private int displayId = 61;
 
   private static final String TAG = HelloArActivity.class.getSimpleName();
 
@@ -187,6 +188,15 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
   private final float[] viewInverseMatrix = new float[16];
   private final float[] worldLightDirection = {0.0f, 0.0f, 0.0f, 0.0f};
   private final float[] viewLightDirection = new float[4]; // view x world light direction
+
+  private ArrayList<Media> getAllMedia() throws Exception {
+    MediaInstanceCollection instances = WebApiThread.getInstance().get(String.format("https://tuakiri.trex-sandwich.com/api/media_instances/%d", displayId), MediaInstanceCollection.class).get();
+    HashSet<Integer> mediaIds = new HashSet<>();
+    for (MediaInstance i : instances.mediaInstances) {
+      mediaIds.add(i.mediaId);
+    }
+
+  }
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
