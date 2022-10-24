@@ -16,7 +16,7 @@
 	if(isset($_POST['submit']))
 	{
 		//Retrieve the form data
-		$file_upload = $_POST['fileToUpload'];
+		//$file_upload = $_POST['fileToUpload'];
     $name = $_POST['name'];
 		$description = $_POST['description'];
 		
