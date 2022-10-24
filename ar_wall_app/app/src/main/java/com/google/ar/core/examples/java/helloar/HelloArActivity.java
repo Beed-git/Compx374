@@ -188,16 +188,7 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
   private final float[] viewInverseMatrix = new float[16];
   private final float[] worldLightDirection = {0.0f, 0.0f, 0.0f, 0.0f};
   private final float[] viewLightDirection = new float[4]; // view x world light direction
-
-  private ArrayList<Media> getAllMedia() throws Exception {
-    MediaInstanceCollection instances = WebApiThread.getInstance().get(String.format("https://tuakiri.trex-sandwich.com/api/media_instances/%d", displayId), MediaInstanceCollection.class).get();
-    HashSet<Integer> mediaIds = new HashSet<>();
-    for (MediaInstance i : instances.mediaInstances) {
-      mediaIds.add(i.mediaId);
-    }
-
-  }
-
+  
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);

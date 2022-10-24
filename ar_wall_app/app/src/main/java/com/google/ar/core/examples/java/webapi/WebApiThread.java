@@ -22,7 +22,7 @@ public class WebApiThread {
     }
 
     public synchronized <T> Future<T> get(String uri, Class<T> tClass) throws Exception {
-        return executorService.submit(() -> webApi.get(uri, this.accessToken, tClass));
+        return this.get(uri, this.accessToken, tClass);
     }
 
     public synchronized <T> Future<T> get(String uri, String accessToken, Class<T> tClass) throws Exception {
@@ -31,6 +31,20 @@ public class WebApiThread {
 
     public synchronized Future<Bitmap> getImageFromURL(String uri) {
         return executorService.submit(() -> webApi.getImageFromURL(uri));
+    }
+
+    public synchronized <T> void post(String uri, T object, Class<T> tClass) {
+        this.post(uri, this.accessToken, object, tClass);
+    }
+
+    public synchronized <T> void post(String uri, String accessToken, T object, Class<T> tClass) {
+        executorService.submit(() -> {
+            try {
+                webApi.post(uri, accessToken, object, tClass);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     private static WebApiThread instance;
