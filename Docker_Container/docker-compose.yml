@@ -1,5 +1,7 @@
 #Apparently no longer ideal to define a version
 
+# Yooo secrets are the thing to hide login data
+
 services:
   php:
     build: 
@@ -16,8 +18,7 @@ services:
       #- ./COMPX374/php:/var/www/html/php
       - ./info.php:/var/www/html/info.php
       - ./COMPX374:/var/www/html/
-      #- ./my_sql_php.ini-production:/usr/local/etc/php/php.ini-production
-      #I can't remember but I think the single line above may not be needed any more? Since we got it sorted in the Dockerfile?
+      - images:/var/www/html/images/    #for now just gonna put it in images raw
     restart: unless-stopped
 
   web_nginx:   #So this is like the web host or whatever? My brain tired
@@ -35,10 +36,9 @@ services:
       #- ./COMPX374/php:/var/www/html/php
       - ./info.php:/var/www/html/info.php
       - ./COMPX374:/var/www/html/
-      #- ./my_sql_php.ini-production:/usr/local/etc/php/php.ini-production
+      - images:/var/www/html/images/
       # in the form: hostPath:containerPath:mode
       #   where mode is read-only or read-write and I don't fully understand what this references, while it is also not compulsory
-      #   
     networks:                                   #}
       - caddy                                   #}Gibraltar
       - default
@@ -100,3 +100,6 @@ networks:
 
 volumes:
   caddy_data: {}
+  #Will we need a volume for uploading images? It should be external.
+  images:
+    external: true
