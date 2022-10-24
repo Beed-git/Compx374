@@ -27,7 +27,7 @@
 		$rowMedia = $result1->fetch();
 				
 		//Get the artist information
-		$query = "select username from Artist where artist_id=".$rowMedia['artist_id'];
+		$query = "select * from Artist where artist_id=".$rowMedia['artist_id'];
 		$result2 = $con->query($query);
 				
 		if($result2 != FALSE)
@@ -40,10 +40,11 @@
 			echo "<div class='image-container'>";
 			echo "<img src='".$rowMedia['media_url']."' alt='Media Submission Image'>";
 			echo "</div>";
-			echo "<p>Mural Name: ".$rowMedia['name']."</p>";
-			echo "<p>Mural Description: ".$rowMedia['description']."</p>";
-			echo "<p>Artist Name: ".$rowArtist['username']."</p>";
-			echo "<p>Artist Description: ".$rowArtist['description']."</p>";
+			echo "<p><span class='bold'>Mural Name:</span> ".$rowMedia['name']."</p>";
+			echo "<p><span class='bold'>Mural Description:</span> ".$rowMedia['description']."</p>";
+			echo "<p><span class='bold'>Artist Name:</span> ".$rowArtist['username']."</p>";
+			echo "<p><span class='bold'>Artist Email:</span> ".$rowArtist['email']."</p>";
+      echo "<p><span class='bold'>Artist Description:</span> ".$rowArtist['story']."</p>";
 			echo "<button class='approve-button' type=submit' onclick='approveSubmission(".$media_id.")'>Approve</button>";
 			echo "<button class='disapprove-button' type=submit' onclick='disapproveSubmission(".$media_id.")'>Disapprove</button>";
 			echo "</div>";
