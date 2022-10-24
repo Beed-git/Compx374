@@ -13,6 +13,6 @@ public class MediaInstance {
 
     @Override
     public String toString() {
-        return String.format("%d\n%d\n%d\n%d\n%d\n%d\n%d\n%d\n%d", id, x, y, z, scale_x, scale_y, scale_z, mediaId, videoId);
+        return String.format("%d\n%f\n%f\n%f\n%f\n%f\n%f\n%d\n%d", id, x, y, z, scale_x, scale_y, scale_z, mediaId, videoId);
     }
 }
