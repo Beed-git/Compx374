@@ -16,7 +16,6 @@
 	if(isset($_POST['submit']))
 	{
 		//Retrieve the form data
-		//$file_upload = $_POST['fileToUpload'];
     $name = $_POST['name'];
 		$description = $_POST['description'];
 		
@@ -24,7 +23,9 @@
     $uploadOk = 1;
     $originalName = basename($_FILES["fileToUpload"]["name"]);
     $imageFileType = strtolower(pathinfo($originalName,PATHINFO_EXTENSION));
-    $media_url = '../images/'.uniqid().'.'.$imageFileType;
+    $fileDestination = '../images/'.uniqid()
+    $media_url = $fileDestination.'.'.$imageFileType;
+    
 
     //Check if image file is an actual image or a fake image
     if(isset($_POST["submit"]))
@@ -43,7 +44,7 @@
     }
 
     //Check if file already exists
-    if (file_exists($media_url))
+    if (file_exists($fileDestination))
     {
       echo "Sorry, file already exists.";
       $uploadOk = 0;
@@ -71,11 +72,8 @@
     }
     else
     {
-      //if(copy($_FILES['fileToUpload']['tmp_name'], $media_url))
-      if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $media_url))
+      if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $fileDestination))
       {
-        //echo "The file ". htmlspecialchars( basename( $_FILES["fileToUpload"]["name"])). " has been uploaded.";
-        
         //Add this new media to the media table
 		    $id_query = "select id from Artist where email='".$_SESSION["email"].'"';
 		    $id_result = $con->query($query);
