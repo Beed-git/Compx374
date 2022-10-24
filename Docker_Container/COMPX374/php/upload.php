@@ -16,7 +16,7 @@
 	if(isset($_POST['submit']))
 	{
 		//Retrieve the form data
-		//$file_upload = $_POST['fileToUpload'];
+		$file_upload = $_POST['fileToUpload'];
     $name = $_POST['name'];
 		$description = $_POST['description'];
 		
@@ -25,11 +25,6 @@
     $originalName = basename($_FILES["fileToUpload"]["name"]);
     $imageFileType = strtolower(pathinfo($originalName,PATHINFO_EXTENSION));
     $media_url = '../images/'.uniqid().'.'.$imageFileType;
-    
-    //$target_dir = "../images/";
-    //$media_url = $target_dir . basename($_FILES["fileToUpload"]["name"]);
-    //$uploadOk = 1;
-    //$imageFileType = strtolower(pathinfo($media_url,PATHINFO_EXTENSION));
 
     //Check if image file is an actual image or a fake image
     if(isset($_POST["submit"]))
@@ -37,7 +32,7 @@
       $check = getimagesize($_FILES["fileToUpload"]["tmp_name"]);
       if($check !== false)
       {
-        echo "File is an image - " . $check["mime"] . ".";
+        //echo "File is an image - " . $check["mime"] . ".";
         $uploadOk = 1;
       }
       else
@@ -76,9 +71,6 @@
     }
     else
     {
-      echo "<p>".$_FILES["fileToUpload"]["name"]."</p>";
-      echo "<p>".$media_url."</p>";
-      
       //if(copy($_FILES['fileToUpload']['tmp_name'], $media_url))
       if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $media_url))
       {
@@ -169,4 +161,4 @@
 			</div>
 		</div>
 	</body>
-</html>	
+</html>
