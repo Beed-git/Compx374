@@ -23,7 +23,7 @@
     $uploadOk = 1;
     $originalName = basename($_FILES["fileToUpload"]["name"]);
     $imageFileType = strtolower(pathinfo($originalName,PATHINFO_EXTENSION));
-    $fileDestination = '../images/'.uniqid()
+    $fileDestination = '../images/'.uniqid();
     $media_url = $fileDestination.'.'.$imageFileType;
     
 
@@ -159,4 +159,4 @@
 			</div>
 		</div>
 	</body>
-</html>
+</html>	
