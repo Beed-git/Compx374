@@ -25,7 +25,7 @@
 		$username = $firstname.' '.$lastname;
 		
 		//Hash the password
-		$hashed_password = password_hash($password, PASSWORD_DEFAULT);
+		$hashed_password = password_hash($password, PASSWORD_BCRYPT);
 		
 		//Query the Artist and Moderator tables for the email
 		$artistQuery = "select * from Artist where email = '".$email."'";
@@ -109,4 +109,4 @@
 		  </form>
     </div>
 	</body>
-</html>	
+</html>

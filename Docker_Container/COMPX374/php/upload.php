@@ -16,15 +16,16 @@
 	if(isset($_POST['submit']))
 	{
 		//Retrieve the form data
-		$file_upload = $_POST['file_upload'];
     $name = $_POST['name'];
 		$description = $_POST['description'];
 		
 		//Save the image to the server !!TO BE COMPLETED!!
-    $media_url = '../images/'.uniqid();
     $uploadOk = 1;
     $originalName = basename($_FILES["fileToUpload"]["name"]);
     $imageFileType = strtolower(pathinfo($originalName,PATHINFO_EXTENSION));
+    $fileDestination = '../images/'.uniqid();
+    $media_url = $fileDestination.'.'.$imageFileType;
+    
 
     //Check if image file is an actual image or a fake image
     if(isset($_POST["submit"]))
@@ -32,7 +33,7 @@
       $check = getimagesize($_FILES["fileToUpload"]["tmp_name"]);
       if($check !== false)
       {
-        echo "File is an image - " . $check["mime"] . ".";
+        //echo "File is an image - " . $check["mime"] . ".";
         $uploadOk = 1;
       }
       else
@@ -43,7 +44,7 @@
     }
 
     //Check if file already exists
-    if (file_exists($media_url))
+    if (file_exists($fileDestination))
     {
       echo "Sorry, file already exists.";
       $uploadOk = 0;
@@ -59,7 +60,7 @@
     //Allow certain file formats
     if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" && $imageFileType != "gif" )
     {
-      echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+      echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";      
       $uploadOk = 0;
     }
 
@@ -71,15 +72,13 @@
     }
     else
     {
-      if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $media_url))
+      if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $fileDestination))
       {
-        //echo "The file ". htmlspecialchars( basename( $_FILES["fileToUpload"]["name"])). " has been uploaded.";
-        
         //Add this new media to the media table
 		    $id_query = "select id from Artist where email='".$_SESSION["email"].'"';
 		    $id_result = $con->query($query);
 		
-		    if ($result)
+		    if ($id_result)
 		    {
 			    $artist_id = $id_result->fetch();
 			
@@ -105,7 +104,7 @@
       }
       else
       {
-        echo "Sorry, there was an error uploading your file.";
+        echo "Sorry, there was an error uploading your file.".$_FILES['fileToUpload']['error'];
       }
     }
   }
