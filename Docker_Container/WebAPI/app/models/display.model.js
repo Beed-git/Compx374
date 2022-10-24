@@ -38,6 +38,15 @@ const getDisplaysByCompetition = async function(id) {
     return displays;
 }
 
+const getMediaFromDisplay = async function (id) {
+    /*
+    SELECT DISTINCT m.media_id
+FROM Media m, Media_Instance mi, Display_Contains dc
+WHERE dc.display_id = 2
+AND mi.minstance_id = dc.minstance_id
+AND m.media_id = mi.media_id
+    */
+}
 module.exports = {
     Display,
     getAllDisplays,

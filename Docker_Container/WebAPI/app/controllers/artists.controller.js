@@ -67,7 +67,19 @@ const getArtistByEmail = async function(req, res, email) {
 	}
 }
 
+const createArtist = async function(req, res) {
+	try {
+		const artist = Artist.Artist(req.body);
+		const id = await Artist.createArtist(artist);
+		res.status(201).send("New artist with id " + id + " created with email " + artist.email);
+	} catch (err) {
+		console.log(err);
+		res.sendStatus(500);
+	}
+}
+
 module.exports = {
+	createArtist,
     getArtists,
     getArtistById,
     getArtistsQuery,

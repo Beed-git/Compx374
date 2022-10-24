@@ -43,8 +43,18 @@ const getArtistByEmail = async function(email) {
     } else return null;
 }
 
+const createArtist = async function(artist) {
+    const res = await query (db.format("insert into Artist(email, username, password) values (?, ?, ?)", [artist.email, artist.username, artist.password]));
+        //db.escape(artist.email + "," + db.escape(artist.username) + ',' + db.escape(artist.password) + ")" ));
+    
+        // const res = await query ("insert into Artist('email', 'username', 'password') values (" 
+        // + db.escape(artist.email + "," + db.escape(artist.username) + ',' + db.escape(artist.password) + ")" ));
+    return res.insertId;
+}
+
 module.exports = {
     Artist,
+    createArtist,
     getAllArtists,
     getArtistById,
     getArtistByUsername,

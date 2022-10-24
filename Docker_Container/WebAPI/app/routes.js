@@ -30,6 +30,7 @@ module.exports = app => {
 
 	app.get("/artists", auth.verifyToken, artists.getArtistsQuery);
 	app.get("/artists/:id", auth.verifyToken, artists.getArtistById);
+	app.post("/artists", auth.verifyToken, artists.createArtist);
 
 	app.get("/moderators", auth.verifyToken, moderators.getModeratorsQuery);
 	app.get("/moderators/:id", auth.verifyToken, moderators.getModeratorById);
