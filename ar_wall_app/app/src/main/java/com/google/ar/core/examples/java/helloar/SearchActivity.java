@@ -1,7 +1,9 @@
 package com.google.ar.core.examples.java.helloar;
 
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -9,8 +11,12 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.ar.core.examples.java.webapi.WebApiThread;
+import com.google.ar.core.examples.java.webapi.models.Display;
+import com.google.ar.core.examples.java.webapi.models.DisplayCollection;
 
 import org.w3c.dom.Text;
+
+import java.util.ArrayList;
 
 
 public class SearchActivity extends AppCompatActivity{
@@ -28,8 +34,10 @@ public class SearchActivity extends AppCompatActivity{
                      "https://www.belloflostsouls.net/wp-content/uploads/2021/12/icespire-header.jpg",
                     "https://image.shutterstock.com/image-illustration/red-dragon-blue-magic-swirling-260nw-1124418902.jpg",
                     "https://image.shutterstock.com/image-illustration/adventurer-came-across-golden-dragon-600w-1981678550.jpg",
-                    "https://image.shutterstock.com/image-photo/dungeons-dragons-scene-made-miniatures-600w-1090759115.jpg"};//,
-                    //"https://image.shutterstock.com/image-illustration/painting-red-dragon-flying-over-600w-1436845406.jpg"};
+                    "https://image.shutterstock.com/image-photo/dungeons-dragons-scene-made-miniatures-600w-1090759115.jpg"};
+                    //"https://tuakiri.trex-sandwich.com/images/"};
+
+            ArrayList<Display> displays = WebApiThread.getInstance().get("https://tuakiri.trex-sandwich.com/api/displays", DisplayCollection.class).get().displays;
 
             String[] textViewNames = {"Dragon", "Dragaon + People", "Another Dragon", "Yet Another Dragon", "Too many Dragons"};// "Yup that's enough"};
 //            ImageButton imageButton;
@@ -66,7 +74,7 @@ public class SearchActivity extends AppCompatActivity{
 
                 //Checking if there are an odd number of images.
                 if(i+1 == imageNames.length){
-                    ImageButton newImageButton1 = createImageButton(imageNames[i]);
+                    ImageButton newImageButton1 = createImageButton(imageNames[i], i);
                     TextView newTextView1 = createTextView(textViewNames[i]);
                     //Adding vertical views to horizontal views
                     horizontalLayout.addView(verticalLayout1);
@@ -78,8 +86,8 @@ public class SearchActivity extends AppCompatActivity{
                 }
                 else
                 {
-                    ImageButton newImageButton1 = createImageButton(imageNames[i]);
-                    ImageButton newImageButton2 = createImageButton(imageNames[i+1]);
+                    ImageButton newImageButton1 = createImageButton(imageNames[i], i);
+                    ImageButton newImageButton2 = createImageButton(imageNames[i+1], i+1);
 
                     TextView newTextView1 = createTextView(textViewNames[i]);
                     TextView newTextView2 = createTextView(textViewNames[i+1]);
@@ -94,8 +102,6 @@ public class SearchActivity extends AppCompatActivity{
                     verticalLayout2.addView(newImageButton2);
                     verticalLayout2.addView(newTextView2);
                 }
-
-
             }
         }
         catch (Exception e)
@@ -141,9 +147,10 @@ public class SearchActivity extends AppCompatActivity{
     }
 
     //Creates a new image button
-    protected ImageButton createImageButton(String url){
+    protected ImageButton createImageButton(String url, int id){
         //Creating button
         ImageButton newImageButton = new ImageButton(this);
+        newImageButton.setId(id);
         try{
             //Adding params
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
@@ -158,10 +165,24 @@ public class SearchActivity extends AppCompatActivity{
         catch (Exception e){
             e.printStackTrace();
         }
+
+        newImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.out.println("THIS IS THE ID"+ v.getId());
+                startAR(v.getId());
+            }
+        });
         //Returning the imageButton
         return newImageButton;
     }
 
+
+    public void startAR(int id){
+        Intent intent = new Intent(this, HelloArActivity.class);
+        intent.putExtra("ID", id);
+        startActivity(intent);
+    }
 
     //Fetch images from server "http...."
     //Assign an image to each imagebutton
