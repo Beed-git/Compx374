@@ -14,7 +14,7 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>Review Submissions</title>
-		<link href="../css/upload.css" rel="stylesheet" type="text/css">
+		<link href="../css/tuakiri.css" rel="stylesheet" type="text/css">
 		<script>
 			//Fetch the submissions for the current competition
 			let getSubmissions = () => {
@@ -49,6 +49,7 @@
 	<body onload="getSubmissions();">
 		<div class="topnav">
 			<a class="active" href="submissions.php">Review Submissions</a>
+			<a href="editDisplays.php">Edit Displays</a>
 			<a href="newCompetition.php">New Competition</a>
 			<a href="newModerator.php">Register New Moderator</a>
 			<a class="logout" href="logout.php">Log out</a>

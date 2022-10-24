@@ -23,7 +23,7 @@ const getMediaInstanceByDisplay = async function(req, res, id) {
 		try {
 			const instance = await MediaInstance.getMediaInstanceByDisplay(id);
 			if (instance) {
-				res.status(200).json({media_instance: instance});
+				res.status(200).json({media_instances: instance});
 			} else {
 				res.status(404).send("Display with id '" + id + "' does not exist.");
 			}

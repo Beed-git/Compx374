@@ -80,31 +80,33 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>Register</title>
-		<link href="../css/login.css" rel="stylesheet" type="text/css">
+		<link href="../css/tuakiri.css" rel="stylesheet" type="text/css">
 	</head>
 	<body>
-		<form method="post" action="" name="signup-form">
-			<h1>Create an Account for Tuakiri</h1>
-			<div class="form-element">
-				<input type="text" name="firstname" placeholder="First Name" required />
-			</div>
-			<div class="form-element">
-				<input type="text" name="lastname" placeholder="Last Name" required />
-			</div>
-			<div class="form-element">
-				<input type="email" name="email" placeholder="Email" required />
-			</div>
-			<div class="form-element">
-				<input type="password" name="password" placeholder="Password" required />
-			</div>
-			<div class="form-element">
-				<input type="password" name="confirmPassword" placeholder="Confirm Password" required />
-			</div>
-			<div class="form-element">
-				<textarea name="story" id="story" placeholder="Story" cols="50" rows="10" maxlength="500"></textarea>
-			</div>			
-			<button type="submit" name="register" value="register">Register</button>
-			<p>Already have an account? <a href="../index.php">Log in</a></p>
-		</form>
+		<div class="form-container">
+      <form method="post" action="" name="signup-form">
+			  <h1>Create an Account for Tuakiri</h1>
+			  <div class="form-element">
+				  <input type="text" name="firstname" placeholder="First Name" required />
+			  </div>
+			  <div class="form-element">
+				  <input type="text" name="lastname" placeholder="Last Name" required />
+			  </div>
+			  <div class="form-element">
+				  <input type="email" name="email" placeholder="Email" required />
+			  </div>
+			  <div class="form-element">
+				  <input type="password" name="password" placeholder="Password" required />
+			  </div>
+			  <div class="form-element">
+				  <input type="password" name="confirmPassword" placeholder="Confirm Password" required />
+			  </div>
+			  <div class="form-element">
+				  <textarea name="story" id="story" placeholder="Story" cols="50" rows="10" maxlength="500" required></textarea>
+			  </div>			
+			  <button class="form-button" type="submit" name="register" value="register">Register</button>
+			  <p>Already have an account? <a href="../index.php">Log in</a></p>
+		  </form>
+    </div>
 	</body>
 </html>	

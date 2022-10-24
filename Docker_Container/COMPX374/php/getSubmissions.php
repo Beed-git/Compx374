@@ -43,12 +43,14 @@
 					$rowArtist = $result3->fetch();
 					
 					//Output the submission information
-					echo "<div class='submission' onclick='viewSubmission(".$rowMedia['media_id'].");'>";
+					echo "<div class='submission selectable' onclick='viewSubmission(".$rowMedia['media_id'].");'>";
 					echo "<div class='image-container'>";
 					echo "<img src='".$rowMedia['media_url']."' alt='Media Submission Image'>";
 					echo "</div>";
+          echo "<div class='submission-description'>";
 					echo "<p>Mural Name: ".$rowMedia['name']."</p>";
 					echo "<p>Artist Name: ".$rowArtist['username']."</p>";
+          echo "</div>";
 					echo "</div>";
 				}
 				else

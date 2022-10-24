@@ -17,7 +17,7 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>New Competition</title>
-		<link href="../css/upload.css" rel="stylesheet" type="text/css">	
+		<link href="../css/tuakiri.css" rel="stylesheet" type="text/css">	
 		<script>
 			let confirmCompCreation = () => {
 					if (confirm("If you choose to continue, this competition will become the current competition. Do you want to proceed?")) {
@@ -42,6 +42,7 @@
 	<body>
 		<div class="topnav">
 			<a href="submissions.php">Review Submissions</a>
+			<a href="editDisplays.php">Edit Displays</a>
 			<a class="active" href="newCompetition.php">New Competition</a>
 			<a href="newModerator.php">Register New Moderator</a>
 			<a class="logout" href="logout.php">Log out</a>
@@ -49,13 +50,14 @@
 		<h1>New Competition</h1>
 		<div id="confirmCompCreationMessage"></div>
 		<form action="" method="post" name="new-competition-form">
+      <h2>Competition Information</h2>
 			<div class="form-element">
 				<input type="text" id="name" name="name" placeholder="Competition Name" required />
 			</div>
 			<div class="form-element">
 				<input type="text" id="description" name="description" placeholder="Description" required />
 			</div>
-			<button type="button" name="submit" value="submit" onclick="confirmCompCreation()">Submit</button>
+			<button class='form-button' type="button" name="submit" value="submit" onclick="confirmCompCreation()">Submit</button>
 		</form>		
 	</body>
-</html>
+</html>	

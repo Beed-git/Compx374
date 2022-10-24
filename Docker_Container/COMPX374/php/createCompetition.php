@@ -30,5 +30,5 @@
 	$con->query($update_query);
 	
 	//Return a confirmation message
-	echo "The new competition has been successfully created and is set as the current competition.";
+	echo "<div class='success'><p>The new competition has been successfully created and is set as the current competition.</p></div>";
 ?>

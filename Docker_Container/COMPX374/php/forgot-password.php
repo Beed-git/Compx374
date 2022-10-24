@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>Reset Password</title>
-		<link href="../css/login.css" rel="stylesheet" type="text/css">
+		<link href="../css/tuakiri.css" rel="stylesheet" type="text/css">
 	</head>
 	<body>
 		<form method="post" action="" name="login-form">
@@ -12,7 +12,7 @@
 			<div class="form-element">
 				<input type="email" name="email" placeholder="Email" required />
 			</div>
-			<button type="submit" name="login" value="login">Reset Password</button>
+			<button class="form-button" type="submit" name="login" value="login">Reset Password</button>
 		</form>
 	</body>
 </html>	

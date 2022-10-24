@@ -25,8 +25,8 @@
 	if($result1 != FALSE and $result2 != FALSE)
 	{		
 		//Show a confirmation message to the user
-		echo "<button type=submit' onclick='getSubmissions()'>Back</button>";
-		echo "<p>The submission has been successfully deleted.</p>";
+		echo "<div class='success'><button class='back-button' type=submit' onclick='getSubmissions()'>&#x2190;</button>";
+		echo "<p>The submission has been successfully deleted.</p></div>";
 	}
 	else
 	{

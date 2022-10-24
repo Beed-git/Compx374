@@ -38,7 +38,7 @@
 				//Otherwise, display an error message
 				else
 				{
-					echo '<p>Your username or password was incorrect.</p>';
+					echo '<div class="error"><p>Your username or password was incorrect.</p></div>';
 				}
 			}
 			//Check if the email belongs to a moderator
@@ -49,24 +49,24 @@
 				{
 					$_SESSION["loggedin"] = true;
 					$_SESSION['email'] = $email;
-					header("Location: php/newCompetition.php");
+					header("Location: php/submissions.php");
 				}
 				//Otherwise, display an error message
 				else
 				{
-					echo '<p>Your username or password was incorrect.</p>';
+					echo '<div class="error"><p>Your username or password was incorrect.</p></div>';
 				}
 			}
 			//Otherwise, display an error message
 			else
 			{
-				echo '<p>Your username or password was incorrect.</p>';
+				echo '<div class="error"><p>Your username or password was incorrect.</p></div>';
 			}
 		}
 		//Otherwise, display an error message
 		else
 		{
-			echo '<p>Error in database query.</p>';
+			echo '<div class="error"><p>Error in database query.</p></div>';
 		}
 	}
 ?>
@@ -75,7 +75,7 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>Login</title>
-		<link href="css/login.css" rel="stylesheet" type="text/css">
+		<link href="css/tuakiri.css" rel="stylesheet" type="text/css">
 	</head>
 	<body>		
 		<form action="" method="post" name="signin-form">
@@ -89,7 +89,7 @@
 			<div>
 				<a href="php/forgot-password.php">Forgot password?</a>
 			</div>
-			<button type="submit" name="login" value="login">Log In</button>
+			<button class="form-button" type="submit" name="login" value="login">Log In</button>
 			<p>No account? <a href="php/register.php">Create one</a></p>
 		</form>
 	</body>

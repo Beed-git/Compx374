@@ -10,13 +10,14 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>Register</title>
-		<link href="../css/login.css" rel="stylesheet" type="text/css">
+		<link href="../css/tuakiri.css" rel="stylesheet" type="text/css">
 	</head>
 	<body>
 		<div class="topnav">
 			<a href="submissions.php">Review Submissions</a>
-			<a class="active" href="newCompetition.php">New Competition</a>
-			<a href="newModerator.php">Register New Moderator</a>
+			<a href="editDisplays.php">Edit Displays</a>
+			<a href="newCompetition.php">New Competition</a>
+			<a class="active" href="newModerator.php">Register New Moderator</a>
 			<a class="logout" href="logout.php">Log out</a>
 		</div>
 		<?php
@@ -64,7 +65,7 @@
 			
 							if ($result2)
 							{
-								echo "<p>New moderator successfully registered.</p>";
+								echo "<div class='success'><p>New moderator successfully registered.</p></div>";
 							}
 							//Otherwise, display an error message
 							else
@@ -84,8 +85,9 @@
 				}
 			}
 		?>
+    <h1>Register New Moderator</h1>
 		<form method="post" action="" name="signup-form">
-			<h1>Register a New Moderator</h1>
+			<h2>New Moderator Information</h2>
 			<div class="form-element">
 				<input type="text" name="firstname" placeholder="First Name" required />
 			</div>
@@ -101,7 +103,7 @@
 			<div class="form-element">
 				<input type="password" name="confirmPassword" placeholder="Confirm Password" required />
 			</div>			
-			<button type="submit" name="register" value="register">Register</button>
+			<button class="form-button" type="submit" name="register" value="register">Register</button>
 		</form>
 	</body>
-</html>
+</html>	

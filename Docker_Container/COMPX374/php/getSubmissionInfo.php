@@ -35,8 +35,8 @@
 			$rowArtist = $result2->fetch();
 			
 			//Output the submission information
-			echo "<div>";
-			echo "<button type=submit' onclick='getSubmissions()'>Back</button>";
+			echo "<div class='individual-submission'>";
+			echo "<button class='back-button' type=submit' onclick='getSubmissions()'>&#x2190;</button>";
 			echo "<div class='image-container'>";
 			echo "<img src='".$rowMedia['media_url']."' alt='Media Submission Image'>";
 			echo "</div>";
@@ -44,8 +44,8 @@
 			echo "<p>Mural Description: ".$rowMedia['description']."</p>";
 			echo "<p>Artist Name: ".$rowArtist['username']."</p>";
 			echo "<p>Artist Description: ".$rowArtist['description']."</p>";
-			echo "<button type=submit' onclick='approveSubmission(".$media_id.")'>Approve</button>";
-			echo "<button type=submit' onclick='disapproveSubmission(".$media_id.")'>Disapprove</button>";
+			echo "<button class='approve-button' type=submit' onclick='approveSubmission(".$media_id.")'>Approve</button>";
+			echo "<button class='disapprove-button' type=submit' onclick='disapproveSubmission(".$media_id.")'>Disapprove</button>";
 			echo "</div>";
 		}
 		else

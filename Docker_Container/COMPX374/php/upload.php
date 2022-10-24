@@ -1,108 +1,163 @@
 <?php
-	// Initialize the session
+	//Initialize the session
 	session_start();
  
-	// Check if the user is logged in, if not then redirect him to login page
+	//Check if the user is logged in, if not then redirect him to login page
 	if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true)
 	{
 		header("location: ../index.php");
 		exit;
 	}
+	
+	//Connect to the database
+	require_once('connection.php');
+	
+	//Check if the form is submitted
+	if(isset($_POST['submit']))
+	{
+		//Retrieve the form data
+		$file_upload = $_POST['file_upload'];
+    $name = $_POST['name'];
+		$description = $_POST['description'];
+		
+		//Save the image to the server !!TO BE COMPLETED!!
+    $media_url = '../images/'.uniqid();
+    $uploadOk = 1;
+    $originalName = basename($_FILES["fileToUpload"]["name"]);
+    $imageFileType = strtolower(pathinfo($originalName,PATHINFO_EXTENSION));
+
+    //Check if image file is an actual image or a fake image
+    if(isset($_POST["submit"]))
+    {
+      $check = getimagesize($_FILES["fileToUpload"]["tmp_name"]);
+      if($check !== false)
+      {
+        echo "File is an image - " . $check["mime"] . ".";
+        $uploadOk = 1;
+      }
+      else
+      {
+        echo "File is not an image.";
+        $uploadOk = 0;
+      }
+    }
+
+    //Check if file already exists
+    if (file_exists($media_url))
+    {
+      echo "Sorry, file already exists.";
+      $uploadOk = 0;
+    }
+
+    //Check file size
+    if ($_FILES["fileToUpload"]["size"] > 2000000)
+    {
+      echo "Sorry, your file is too large.";
+      $uploadOk = 0;
+    }
+
+    //Allow certain file formats
+    if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" && $imageFileType != "gif" )
+    {
+      echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+      $uploadOk = 0;
+    }
+
+    // Check if $uploadOk is set to 0 by an error
+    if ($uploadOk == 0)
+    {
+      echo "Sorry, your file was not uploaded.";
+    //if everything is ok, try to upload file
+    }
+    else
+    {
+      if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $media_url))
+      {
+        //echo "The file ". htmlspecialchars( basename( $_FILES["fileToUpload"]["name"])). " has been uploaded.";
+        
+        //Add this new media to the media table
+		    $id_query = "select id from Artist where email='".$_SESSION["email"].'"';
+		    $id_result = $con->query($query);
+		
+		    if ($result)
+		    {
+			    $artist_id = $id_result->fetch();
+			
+			    $query = "insert into Media(media_url,name,description,artist_id) values('".$media_url."','".$name."','".$description."','".$artist_id."')";
+			    echo '<p>'.$query.'</p>';
+			    $result = $con->query($query);
+			
+			    if ($result)
+			    {
+				    echo '<div class="success"><p>Success.</p></div>';
+			    }
+			    //Otherwise, display an error message
+			    else
+			    {
+				    echo '<div class="error"><p>Error in database query.</p></div>';
+			    }
+		    }
+		    //Otherwise, display an error message
+		    else
+		    {
+			    echo '<div class="error"><p>Error in database query.</p></div>';
+		    }
+      }
+      else
+      {
+        echo "Sorry, there was an error uploading your file.";
+      }
+    }
+  }
 ?>
 <!DOCTYPE html>
 <html lang="en">
 	<head>
 		<meta charset="UTF-8">
 		<title>Upload</title>
-		<link href="../css/upload.css" rel="stylesheet" type="text/css">
+		<link href="../css/tuakiri.css" rel="stylesheet" type="text/css">
 		<script>	
 			function showPreview(event)
 			{
 				if(event.target.files.length > 0)
 				{
 					var src = URL.createObjectURL(event.target.files[0]);
-					var preview = document.getElementById("file-ip-1-preview");
+					var preview = document.getElementById("file-upload-preview");
 					preview.src = src;
 					preview.style.display = "block";
 				}
 			}
-			
-			//Create the XHR object
-			ajaxRequest = new XMLHttpRequest();
-			
-			//Prepare and send an AJAX request			
-			let sendAjaxRequest = (method, url, data, callback) => {
-			//Initialise the XHR object with the request type and URL
-			ajaxRequest.open(method, url);
-	
-			if (method == "POST")
-			{
-				ajaxRequest.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-			}
-	
-			//Set the callback function
-			ajaxRequest.onload = callback;
-			//Send the request
-			ajaxRequest.send(data);
-			}
-			
-			//Fetch the artist's story
-			let getArtistStory = (artistEmail) => {
-				fetch("getArtistStory.php", {method: 'post', body: artistEmail}).then(response => response.text()).then(displayArtistStory);
-			}
-
-			//Display the full info for a given player
-			let displayArtistStory = (response) => {
-				document.getElementById("artist-story").textContent = response;
-			}
-			
-			//Function for updating the artist story
-			let updateArtistStory = () => {
-				//Create a JSON object of data to send
-				dataArray = {email:'samsteed4@gmail.com', newArtistStory: document.getElementById("artist-story").textContent};
-				data = JSON.stringify(dataArray);
-				
-				fetch("updateArtistStory.php", {method: 'post', body: data}).then(response => response.text());
-	
-				//Send the AJAX request
-				//sendAjaxRequest("post", "updateArtistStory.php", data, displayData);
-			}
-			
-			//Submit the mural information to the database
-			function submitMural()
-			{
-				//Update the artist story
-				//THIS DOESN'T WORK!!
-				updateArtistStory();
-			}
 		</script>	
 	</head>
-	<body onload="getArtistStory('<?php echo htmlspecialchars($_SESSION["email"]);?>')">
+	<body>
 		 <div class="topnav">
-			<a href="logout.php">Log out</a>
+			<a class="active" href="upload.php">New Submission</a>
+			<a href="artistInfo.php">Your Information</a>
+			<a href="artistSubmissions.php">Your Submissions</a>
+			<a class="logout" href="logout.php">Log out</a>
 		</div> 
 		<h1>Submit Mural</h1>		
 		<div class="center">
 			<div class="form-input">
-				<form action="">
-					<label for="artist-story">About You:</label>
-					<br>
-					<textarea name="artist-story" id="artist-story" cols="50" rows="10" maxlength="500"></textarea>
-					<br>
-					<label for="file-ip-1">Upload Image</label>
-					<div class="image-upload">
-						<input type="file" id="file-ip-1" accept="image/*" onchange="showPreview(event);">
-						<div class="preview">
-							<img id="file-ip-1-preview">
-						</div>
+				<form action="" method="post" name="submission-form" enctype="multipart/form-data">
+					<div class="form-element">
+            Select image to upload:
+            <input type="file" name="fileToUpload" id="fileToUpload" onchange="showPreview(event);">
+            <div class="preview">
+					    <img id="file-upload-preview">
+					  </div>
 					</div>
-					<label for="description">Description:</label>
-					<br>
-					<textarea name="description" cols="50" rows="10" maxlength="500"></textarea>
-					<br>
-					<input type="submit" name="submit" class="submit" value="Submit" onclick="submitMural()">
+					<div class="form-element">
+						<input type="text" name="name" placeholder="Name" required />
+					</div>
+					<div class="form-element">
+						<br>
+						<textarea name="description" cols="50" rows="10" maxlength="500" placeholder="Description"></textarea>
+						<br>
+					</div>
+					<input type="submit" name="submit" class="submit" value="Submit">
 				</form>
 			</div>
 		</div>
 	</body>
-</html>	
+</html>

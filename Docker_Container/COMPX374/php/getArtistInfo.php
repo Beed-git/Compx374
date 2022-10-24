@@ -26,12 +26,12 @@
 		
 		$nameArray = explode(" ", $row['username']);
 		
-		echo "<p><span id='bold'>First Name: </span><span id='artistFirstName'>".$nameArray[0]."</span><input id='editArtistFirstName' type='text' name='firstname' placeholder='First Name' value=\"".$nameArray[0]."\" style='display:none' /></p>";
-		echo "<p><span id='bold'>Last Name: </span><span id='artistLastName'>".$nameArray[1]."</span><input id='editArtistLastName' type='text' name='lastname' placeholder='Last Name' value=\"".$nameArray[1]."\" style='display:none' /></p>";
-		echo "<p><span id='bold'>Story: </span><span id='artistStory'>".$row['story']."</span><textarea id='editArtistStory' type='text' name='story' placeholder='Story' cols='50' rows='10' maxlength='500' style='display:none'>".$row['story']."</textarea></p>";
-		echo "<button id='editArtistInfoButton' type=submit' onclick='editArtistInfo()'>Edit</button>";
-		echo "<button id='updateArtistInfoButton' type=submit' onclick='updateArtistInfo()' style='display:none'>Update</button>";
-		echo "<button id='cancelArtistInfoButton' type=submit' onclick='getArtistInfo()' style='display:none'>Cancel</button>";
+		echo "<div class='artist-info'><div class='form-element'><p><span id='fn-label' class='bold'>First Name: </span><span id='artistFirstName'>".$nameArray[0]."</span><input id='editArtistFirstName' type='text' name='firstname' placeholder='First Name' value=\"".$nameArray[0]."\" style='display:none' /></p></div>";
+		echo "<div class='form-element'><p><span id='ln-label' class='bold'>Last Name: </span><span id='artistLastName'>".$nameArray[1]."</span><input id='editArtistLastName' type='text' name='lastname' placeholder='Last Name' value=\"".$nameArray[1]."\" style='display:none' /></p></div>";
+		echo "<div class='form-element'><p><span id='story-label' class='bold'>Story: </span><span id='artistStory'>".$row['story']."</span><textarea id='editArtistStory' type='text' name='story' placeholder='Story' cols='50' rows='10' maxlength='500' style='display:none'>".$row['story']."</textarea></p></div>";
+		echo "<button id='editArtistInfoButton' class='submit' type=submit' onclick='editArtistInfo()'>Edit</button>";
+		echo "<button id='updateArtistInfoButton' class='approve-button' type=submit' onclick='updateArtistInfo()' style='display:none'>Update</button>";
+		echo "<button id='cancelArtistInfoButton' class='disapprove-button' type=submit' onclick='getArtistInfo()' style='display:none'>Cancel</button></div>";
 	}
 	else
 	{

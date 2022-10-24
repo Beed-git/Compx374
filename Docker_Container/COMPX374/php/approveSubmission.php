@@ -18,26 +18,18 @@
 	//Get the moderator ID
 	$query = "select moderator_id from Moderator where email='".$_SESSION["email"]."'";
 	$result1 = $con->query($query);
-	
-	echo "<p>".$query."</p>";
 
 	//Get the current competition ID
 	$query = "select current_competition from Location where name='anywhere'";
 	$result2 = $con->query($query);
 	
-	echo "<p>".$query."</p>";
-	
 	//Get the media information
 	$query = "select * from Media where media_id=".$media_id;
 	$result3 = $con->query($query);
 	
-	echo "<p>".$query."</p>";
-	
 	//Get the media instance
 	$query = "select * from Media_Instance where media_id=".$media_id;
 	$result4 = $con->query($query);
-	
-	echo "<p>".$query."</p>";
 	
 	if($result1 != FALSE and $result2 != FALSE and $result3 != FALSE and $result4 != FALSE)
 	{
@@ -55,8 +47,8 @@
 		$result5 = $con->query($query);
 		
 		//Show a confirmation message to the user
-		echo "<button type=submit' onclick='getSubmissions()'>Back</button>";
-		echo "<p>The submission has been successfully added to the current competition.</p>";
+		echo "<div class='success'><button class='back-button' type=submit' onclick='getSubmissions()'>&#x2190;</button>";
+		echo "<p>  The submission has been added to the current competition.</p></div>";
 	}
 	else
 	{

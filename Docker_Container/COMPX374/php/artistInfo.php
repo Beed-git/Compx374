@@ -17,7 +17,7 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>Your Info</title>
-		<link href="../css/upload.css" rel="stylesheet" type="text/css">
+		<link href="../css/tuakiri.css" rel="stylesheet" type="text/css">
 		<script>
 			//Fetch the artist's info
 			let getArtistInfo = () => {
@@ -35,8 +35,14 @@
 				document.getElementById("artistFirstName").style.display = "none";
 				document.getElementById("artistLastName").style.display = "none";
 				document.getElementById("artistStory").style.display = "none";
-				document.getElementById("editArtistInfoButton").style.display = "none";
+        
+        document.getElementById("fn-label").style.display = "none";
+        document.getElementById("ln-label").style.display = "none";
+        document.getElementById("story-label").style.display = "none";
 				
+        document.getElementById("editArtistInfoButton").style.display = "none";
+				document.getElementById("editArtistInfoButton").style.display = "none";
+        
 				//Show the text boxes for editing the information, and the update and cancel buttons
 				document.getElementById("editArtistFirstName").style.display = "inline";
 				document.getElementById("editArtistLastName").style.display = "inline";
