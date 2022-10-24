@@ -78,7 +78,7 @@
 		    $id_query = "select id from Artist where email='".$_SESSION["email"].'"';
 		    $id_result = $con->query($query);
 		
-		    if ($result)
+		    if ($id_result)
 		    {
 			    $artist_id = $id_result->fetch();
 			
@@ -159,4 +159,4 @@
 			</div>
 		</div>
 	</body>
-</html>	
+</html>
