@@ -1,8 +1,8 @@
 <?php
-	// Initialize the session
+	//Initialize the session
 	session_start();
  
-	// Check if the user is logged in, if not then redirect him to login page
+	//Check if the user is logged in, if not then redirect him to login page
 	if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true)
 	{
 		header("location: ../index.php");
@@ -17,49 +17,98 @@
 	{
 		//Retrieve the form data
 		$file_upload = $_POST['file_upload'];
-        $name = $_POST['name'];
+    $name = $_POST['name'];
 		$description = $_POST['description'];
 		
 		//Save the image to the server !!TO BE COMPLETED!!
-		if(isset($_FILES['file-upload']))
-		{
-			move_uploaded_file($_FILES['file-upload']['tmp_name'], "../images/". $_FILES['file-upload']['name']);
-		}
-		else
-		{
-			echo "image not found!";
-		}
+    $media_url = '../images/'.uniqid();
+    $uploadOk = 1;
+    $originalName = basename($_FILES["fileToUpload"]["name"]);
+    $imageFileType = strtolower(pathinfo($originalName,PATHINFO_EXTENSION));
+
+    //Check if image file is an actual image or a fake image
+    if(isset($_POST["submit"]))
+    {
+      $check = getimagesize($_FILES["fileToUpload"]["tmp_name"]);
+      if($check !== false)
+      {
+        echo "File is an image - " . $check["mime"] . ".";
+        $uploadOk = 1;
+      }
+      else
+      {
+        echo "File is not an image.";
+        $uploadOk = 0;
+      }
+    }
+
+    //Check if file already exists
+    if (file_exists($media_url))
+    {
+      echo "Sorry, file already exists.";
+      $uploadOk = 0;
+    }
+
+    //Check file size
+    if ($_FILES["fileToUpload"]["size"] > 2000000)
+    {
+      echo "Sorry, your file is too large.";
+      $uploadOk = 0;
+    }
+
+    //Allow certain file formats
+    if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" && $imageFileType != "gif" )
+    {
+      echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+      $uploadOk = 0;
+    }
+
+    // Check if $uploadOk is set to 0 by an error
+    if ($uploadOk == 0)
+    {
+      echo "Sorry, your file was not uploaded.";
+    //if everything is ok, try to upload file
+    }
+    else
+    {
+      if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $media_url))
+      {
+        //echo "The file ". htmlspecialchars( basename( $_FILES["fileToUpload"]["name"])). " has been uploaded.";
+        
+        //Add this new media to the media table
+		    $id_query = "select id from Artist where email='".$_SESSION["email"].'"';
+		    $id_result = $con->query($query);
 		
-		//Add this new media to the media table
-		$media_url = '../images/'.uniqid();
-		
-		$id_query = "select id from Artist where email='".$_SESSION["email"].'"';
-		$id_result = $con->query($query);
-		
-		if ($result)
-		{
-			$artist_id = $id_result->fetch();
+		    if ($result)
+		    {
+			    $artist_id = $id_result->fetch();
 			
-			$query = "insert into Media(media_url,name,description,artist_id) values('".$media_url."','".$name."','".$description."','".$artist_id."')";
-			echo '<p>'.$query.'</p>';
-			$result = $con->query($query);
+			    $query = "insert into Media(media_url,name,description,artist_id) values('".$media_url."','".$name."','".$description."','".$artist_id."')";
+			    echo '<p>'.$query.'</p>';
+			    $result = $con->query($query);
 			
-			if ($result)
-			{
-				echo '<p>Success.</p>';
-			}
-			//Otherwise, display an error message
-			else
-			{
-				echo '<div class="error"><p>Error in database query.</p></div>';
-			}
-		}
-		//Otherwise, display an error message
-		else
-		{
-			echo '<div class="error"><p>Error in database query.</p></div>';
-		}
-	}
+			    if ($result)
+			    {
+				    echo '<div class="success"><p>Success.</p></div>';
+			    }
+			    //Otherwise, display an error message
+			    else
+			    {
+				    echo '<div class="error"><p>Error in database query.</p></div>';
+			    }
+		    }
+		    //Otherwise, display an error message
+		    else
+		    {
+			    echo '<div class="error"><p>Error in database query.</p></div>';
+		    }
+      }
+      else
+      {
+        echo "Sorry, there was an error uploading your file.";
+      }
+    }
+  }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -90,14 +139,13 @@
 		<h1>Submit Mural</h1>		
 		<div class="center">
 			<div class="form-input">
-				<form action="" method="post" name="submission-form">
+				<form action="" method="post" name="submission-form" enctype="multipart/form-data">
 					<div class="form-element">
-						<div class="image-upload">
-							<input type="file" name="file-upload" id="file-upload" accept="image/*" onchange="showPreview(event);">
-							<div class="preview">
-								<img id="file-upload-preview">
-							</div>
-						</div>
+            Select image to upload:
+            <input type="file" name="fileToUpload" id="fileToUpload" onchange="showPreview(event);">
+            <div class="preview">
+					    <img id="file-upload-preview">
+					  </div>
 					</div>
 					<div class="form-element">
 						<input type="text" name="name" placeholder="Name" required />
@@ -112,4 +160,4 @@
 			</div>
 		</div>
 	</body>
-</html>	
+</html>
