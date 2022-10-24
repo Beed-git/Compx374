@@ -23,7 +23,7 @@ public class StartUpActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2NhdGlvbiI6ImFueXdoZXJlIiwiaWF0IjoxNjY1NTIyMjc1fQ.DLmaU9h7LBLV8uxdhQXJBgOUS3QjDZOVkb8gQShVgBI";
         WebApiThread.getInstance().setToken(token);
-        
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
 
