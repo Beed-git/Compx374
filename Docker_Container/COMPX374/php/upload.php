@@ -44,7 +44,7 @@
     }
 
     //Check if file already exists
-    if (file_exists($fileDestination))
+    if (file_exists($media_url))
     {
       echo "Sorry, file already exists.";
       $uploadOk = 0;
@@ -72,7 +72,7 @@
     }
     else
     {
-      if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $fileDestination))
+      if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $media_url))
       {
         //Add this new media to the media table
 		    $id_query = "select id from Artist where email='".$_SESSION["email"].'"';
@@ -93,7 +93,7 @@
 			    //Otherwise, display an error message
 			    else
 			    {
-				    echo '<div class="error"><p>Error in database query.</p></div>';
+				    echo '<div class="error"><p>Error in database query!</p></div>';
 			    }
 		    }
 		    //Otherwise, display an error message
