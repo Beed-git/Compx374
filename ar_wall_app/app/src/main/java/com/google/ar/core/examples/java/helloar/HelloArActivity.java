@@ -101,6 +101,7 @@ import java.util.concurrent.Future;
  */
 public class HelloArActivity extends AppCompatActivity implements SampleRender.Renderer {
   private int displayId = 61;
+  private static final String IMAGE_URL = "https://i.imgur.com/Mbi3wti.jpeg";
 
   private static final String TAG = HelloArActivity.class.getSimpleName();
 
@@ -162,7 +163,7 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
   private Mesh virtualObjectMesh;
   private Shader virtualObjectShader;
   private Texture virtualObjectTexture;
-  private AnimatedTexture virtualObjectAnimatedTexture;
+  //private AnimatedTexture virtualObjectAnimatedTexture;
 
   // Test object, needs to be abstracted away.
   private Mesh downloadedImageMesh;
@@ -409,7 +410,7 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
 
       //URL url = new URL("https://commons.wikimedia.org/wiki/Earth#/media/File:The_Blue_Marble_(remastered).jpg");
       try {
-        Future<Bitmap> bitmap = WebApiThread.getInstance().getImageFromURL("https://i.imgur.com/Mbi3wti.jpeg");
+        Future<Bitmap> bitmap = WebApiThread.getInstance().getImageFromURL(IMAGE_URL);
         ImageBuffer imageBuffer = ImageBuffer.fromBitmap(bitmap.get());
         downloadedImageTexture = ImageTexture.createFromBuffer(imageBuffer);
       } catch (Exception ex) {
@@ -418,7 +419,7 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
 
       downloadedImageMesh = Mesh.createFromAsset(render,"models/plane.obj");
 
-      virtualObjectAnimatedTexture = new AnimatedTexture(render, "models/imagesequence", 24);
+      //virtualObjectAnimatedTexture = new AnimatedTexture(render, "models/imagesequence", 24);
 
       virtualObjectMesh = Mesh.createFromAsset(render, "models/plane.obj");
       virtualObjectShader =
@@ -433,8 +434,8 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
                           Integer.toString(cubemapFilter.getNumberOfMipmapLevels()));
                     }
                   })
-              //.setTexture("u_AlbedoTexture", virtualObjectTexture)
-              .setTexture("u_AlbedoTexture", virtualObjectAnimatedTexture)
+              .setTexture("u_AlbedoTexture", virtualObjectTexture)
+              //.setTexture("u_AlbedoTexture", virtualObjectAnimatedTexture)
               .setTexture("u_Cubemap", cubemapFilter.getFilteredCubemapTexture())
               .setTexture("u_DfgTexture", dfgTexture);
     } catch (IOException e) {
@@ -610,13 +611,14 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
       virtualObjectShader.setMat4("u_ModelView", modelViewMatrix);
       virtualObjectShader.setMat4("u_ModelViewProjection", modelViewProjectionMatrix);
 
-      if (virtualObjectAnimatedTexture != null) {
-        virtualObjectAnimatedTexture.nextFrame();
-        virtualObjectShader.setTexture("u_AlbedoTexture", virtualObjectAnimatedTexture);
-      }
+//      if (virtualObjectAnimatedTexture != null) {
+//        virtualObjectAnimatedTexture.nextFrame();
+//      }
 
-      virtualObjectShader.setTexture("u_AlbedoTexture", virtualObjectAnimatedTexture);
-      render.draw(virtualObjectMesh, virtualObjectShader, virtualSceneFramebuffer);
+//      virtualObjectShader.setTexture("u_AlbedoTexture", virtualObjectAnimatedTexture);
+
+//      virtualObjectShader.setTexture("u_AlbedoTexture", downloadedImageTexture);
+//      render.draw(virtualObjectMesh, virtualObjectShader, virtualSceneFramebuffer);
 
       // Test image.
       if (downloadedImageTexture != null) {
