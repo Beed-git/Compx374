@@ -101,7 +101,9 @@ import java.util.concurrent.Future;
  */
 public class HelloArActivity extends AppCompatActivity implements SampleRender.Renderer {
   private int displayId = 61;
-  private static final String IMAGE_URL = "https://i.imgur.com/Mbi3wti.jpeg";
+  //private static final String IMAGE_URL = "https://i.imgur.com/Mbi3wti.jpeg";
+  //private static final String IMAGE_URL = "https://i.pinimg.com/originals/ca/a9/df/caa9df0ae36595e7d4b9961596adc218.png";
+  private static final String IMAGE_URL = "https://tuakiri.trex-sandwich.com/images/63575459d65fe.png";
 
   private static final String TAG = HelloArActivity.class.getSimpleName();
 
@@ -601,6 +603,7 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
       float yScale = Math.abs(firstPointPose.ty() - secondPointPose.ty());
 
       Matrix.rotateM(modelMatrix, 0, 90, 0, 1, 0);
+      //Curious if this scales relative to the image's dimensions or
       Matrix.scaleM(modelMatrix, 0, xScale, yScale, 1.0f );
 
       // Calculate model/view/projection matrices
@@ -622,7 +625,7 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
 
       // Test image.
       if (downloadedImageTexture != null) {
-        virtualObjectShader.setTexture("u_AlbedoTexture", downloadedImageTexture)
+        virtualObjectShader.setTexture("u_AlbedoTexture", downloadedImageTexture);
         render.draw(downloadedImageMesh, virtualObjectShader, virtualSceneFramebuffer);
       }
     }
