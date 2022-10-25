@@ -622,7 +622,7 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
 
       // Test image.
       if (downloadedImageTexture != null) {
-        virtualObjectShader.setTexture("u_AlbedoTextureu", downloadedImageTexture);
+        virtualObjectShader.setTexture("u_AlbedoTexture", downloadedImageTexture)
         render.draw(downloadedImageMesh, virtualObjectShader, virtualSceneFramebuffer);
       }
     }
