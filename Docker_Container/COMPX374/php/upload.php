@@ -80,9 +80,9 @@
 		
 		    if ($id_result)
 		    {
-			    $artist_id = $id_result->fetch();
+			    $artist_row = $id_result->fetch();
 			
-			    $query = "insert into Media(media_url,name,description,artist_id) values('".$media_url."','".$name."','".$description."','".$artist_id."')";
+			    $query = "insert into Media(media_url,name,description,artist_id) values('".$media_url."','".$name."','".$description."','".$artist_row['artist_id']."')";
 			    echo '<p>'.$query.'</p>';
 			    $result = $con->query($query);
 			
