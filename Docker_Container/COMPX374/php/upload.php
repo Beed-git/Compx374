@@ -76,7 +76,7 @@
       {
         //Add this new media to the media table
 		    $id_query = "select id from Artist where email='".$_SESSION["email"].'"';
-		    $id_result = $con->query($query);
+		    $id_result = $con->query($id_query);
 		
 		    if ($id_result)
 		    {
