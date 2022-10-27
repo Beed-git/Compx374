@@ -74,21 +74,24 @@
 				//Check that the password is the same as the confirmation password
 				if ($password == $confirmPassword)
 				{
-					//Insert new user into the database
-          $artistQuery = "insert into Artist(email,username,password,story) values('".$email."','".$username."','".$hashed_password."','".$story."')";
-					$result2 = $con->query($artistQuery);
+					if ($input_error == false)
+          {
+              //Insert new user into the database
+              $artistQuery = "insert into Artist(email,username,password,story) values('".$email."','".$username."','".$hashed_password."','".$story."')";
+					    $result2 = $con->query($artistQuery);
 			
-					if ($result2)
-					{
-						$_SESSION["loggedin"] = true;
-						$_SESSION['email'] = $email;
-						header("Location: upload.php");
-					}
-					//Otherwise, display an error message
-					else
-					{
-						echo '<div class="error"><p>Error in database query.</p></div>';
-					}	
+					    if ($result2)
+					    {
+						    $_SESSION["loggedin"] = true;
+						    $_SESSION['email'] = $email;
+						    header("Location: upload.php");
+					    }
+					    //Otherwise, display an error message
+					    else
+					    {
+						    echo '<div class="error"><p>Error in database query.</p></div>';
+					    }	
+          }
 				}
 				else
 				{
