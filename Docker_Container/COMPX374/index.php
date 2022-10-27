@@ -91,11 +91,13 @@
 				  <input type="password" id="password" name="password" placeholder="Password" required />
 			  </div>
         <div class="form-element radio-button">
-          <label for"option_user">User</label>
           <input type="radio" class="radio" id="option_user" name="user_type" value="option_user" checked>
-          <label for"option_moderator">Moderator</label>
+          <label for"option_user">User</label>
+          <br>
           <input type="radio" id="option_moderator" name="user_type" value="option_moderator">
-			  </div>
+			    <label for"option_moderator">Moderator</label>
+          <br>
+        </div>
 			  <div>
 				  <a href="php/forgot-password.php">Forgot password?</a>
 			  </div>
