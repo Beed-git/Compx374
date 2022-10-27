@@ -12,15 +12,42 @@
 		$firstname = $_POST['firstname'];
 		$lastname = $_POST['lastname'];
 		$email = $_POST['email'];
-        $password = $_POST['password'];
+    $password = $_POST['password'];
 		$confirmPassword = $_POST['confirmPassword'];
 		$story = $_POST['story'];
+   
+    //Trim spaces from front and end of strings
+    $firstname = trim($firstname);
+    $lastname = trim($lastname);   
+    $email = trim($email);
+    $story = trim($story);      
 		
 		//Deal with any apostrophes present in the input
 		$firstname = str_replace("'", "''", $firstname);
 		$lastname = str_replace("'", "''", $lastname);
 		$story = str_replace("'", "''", $story);
 		
+    //Check that all input is valid
+    $input_error = false;
+    
+    if (!preg_match("/^[a-zA-z-' ]*$/", $firstname))
+    {  
+      echo '<div class="error"><p>Invalid character in first name.</p></div>';
+      $input_error = true;  
+    }
+    
+    if (!preg_match("/^[a-zA-z-' ]*$/", $lastname))
+    {  
+      echo '<div class="error"><p>Invalid character in last name.</p></div>';
+      $input_error = true; 
+    }
+    
+    if (!preg_match("/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/", $password))
+    {  
+      echo '<div class="error"><p>Password must container at least eight characters, and at least one uppercase letter, lowercase letter, and a number.</p></div>';
+      $input_error = true; 
+    }
+   
 		//Create username from first name and last name
 		$username = $firstname.' '.$lastname;
 		
@@ -48,7 +75,7 @@
 				if ($password == $confirmPassword)
 				{
 					//Insert new user into the database
-					$artistQuery = "insert into Artist(email,username,password,story) values('".$email."','".$username."','".$hashed_password."','".$story."')";
+          $artistQuery = "insert into Artist(email,username,password,story) values('".$email."','".$username."','".$hashed_password."','".$story."')";
 					$result2 = $con->query($artistQuery);
 			
 					if ($result2)
@@ -83,7 +110,7 @@
 		<link href="../css/tuakiri.css" rel="stylesheet" type="text/css">
 	</head>
 	<body>
-		<div class="form-container">
+      <br><br>
       <form method="post" action="" name="signup-form">
 			  <h1>Create an Account for Tuakiri</h1>
 			  <div class="form-element">
@@ -107,6 +134,5 @@
 			  <button class="form-button" type="submit" name="register" value="register">Register</button>
 			  <p>Already have an account? <a href="../index.php">Log in</a></p>
 		  </form>
-    </div>
 	</body>
-</html>
+</html>	
