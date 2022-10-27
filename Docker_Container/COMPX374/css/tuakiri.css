@@ -83,7 +83,7 @@ input[type=radio], input.radio
 
 .error
 {
-	margin: 25px;
+	margin: 25px auto;
 	font-size: 1rem;
 	width: 500px;
 	border: 1px solid #red;
