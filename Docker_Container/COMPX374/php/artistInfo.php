@@ -27,6 +27,9 @@
 			//Display the results
 			let displayResults = (response) => {
 				document.getElementById("info").innerHTML = response;
+        
+        //Clear away any error messages
+        document.getElementById("empty_input").innerHTML = "";
 			}
 			
 			//Edit artist information
@@ -60,8 +63,28 @@
 				dataArray = {firstName:firstName, lastName:lastName, story:story};
 				data = JSON.stringify(dataArray);
 				
-				//Update the artist information
-				fetch("updateArtistInfo.php", {method: 'post', body: data}).then(response => response.text()).then(getArtistInfo);
+        //Check that none of the fields have been left blank
+        if (firstName != '' && lastName != '' && story != '')
+        {
+          //Update the artist information
+				  fetch("updateArtistInfo.php", {method: 'post', body: data}).then(response => response.text()).then(getArtistInfo);
+        }
+        else
+        {
+          //Check if there is already an error message
+          if (document.getElementById('empty_input').childElementCount == 0)
+          {
+            //Create and display an error message
+            var divElement = document.createElement('div');
+            divElement.setAttribute('class', 'error');
+          
+            var pElement = document.createElement('p');
+            pElement.innerHTML = 'All of the fields must have at least some input';
+          
+            divElement.appendChild(pElement);
+            document.getElementById("empty_input").appendChild(divElement);
+          }
+        }
 			}
 		</script>
 	</head>
@@ -72,7 +95,8 @@
 			<a href="artistSubmissions.php">Your Submissions</a>
 			<a class="logout" href="logout.php">Log out</a>
 		</div>
-		<h1>Your Information</h1>		
+		<h1>Your Information</h1>
+    <div id='empty_input'></div>	
 		<div id="info"></div>
 	</body>
-</html>	
+</html>
