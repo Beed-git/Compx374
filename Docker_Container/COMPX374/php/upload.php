@@ -100,13 +100,14 @@
           if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $fileDestination))
           {
           //Add this new media to the media table
-		      $id_query = "select id from Artist where email='".$_SESSION["email"].'"';
-		      $id_result = $con->query($query);
+		      $id_query = "select id from Artist where email='".$_SESSION["email"]."'";
+		      $id_result = $con->query($id_query);
 		
 		      if ($id_result)
 		      {
-			      $artist_id = $id_result->fetch();
-			      $query = "insert into Media(media_url,name,description,artist_id) values('".$media_url."','".$name."','".$description."','".$artist_id."')";
+			      $artist_row = $id_result->fetch();
+			      
+			      $query = "insert into Media(media_url,name,description,artist_id) values('".$media_url."','".$name."','".$description."','".$artist_row['artist_id']."')";
 			      $result = $con->query($query);
 			
 			      if ($result)
