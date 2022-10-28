@@ -100,7 +100,7 @@
           if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $fileDestination))
           {
           //Add this new media to the media table
-		      $id_query = "select id from Artist where email='".$_SESSION["email"]."'";
+		      $id_query = "select artist_id from Artist where email='".$_SESSION["email"]."'";
 		      $id_result = $con->query($id_query);
 		
 		      if ($id_result)
