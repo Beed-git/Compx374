@@ -30,9 +30,35 @@
 				$email = $_POST['email'];
 				$password = $_POST['password'];
 				$confirmPassword = $_POST['confirmPassword'];
+        
+        //Trim spaces from front and end of strings
+        $firstname = trim($firstname);
+        $lastname = trim($lastname);   
+        $email = trim($email);
 			
 				//Deal with any apostrophes present in the input
 				$username = str_replace("'", "''", $username);
+        
+        //Check that all input is valid
+        $input_error = false;
+    
+        if (!preg_match("/^[a-zA-z-' ]*$/", $firstname))
+        {  
+          echo '<div class="error"><p>Invalid character in first name.</p></div>';
+          $input_error = true;  
+        }
+    
+        if (!preg_match("/^[a-zA-z-' ]*$/", $lastname))
+        {  
+          echo '<div class="error"><p>Invalid character in last name.</p></div>';
+          $input_error = true; 
+        }
+    
+        if (!preg_match("/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/", $password))
+        {  
+          echo '<div class="error"><p>Password must container at least eight characters, and at least one uppercase letter, lowercase letter, and a number.</p></div>';
+          $input_error = true; 
+        }
 		
 				//Create username from first name and last name
 				$username = $firstname.' '.$lastname;
@@ -59,19 +85,22 @@
 						//Check that the password is the same as the confirmation password
 						if ($password == $confirmPassword)
 						{
-							//Insert new user into the database
-							$moderatorQuery = "insert into Moderator(email,username,password) values('".$email."','".$username."','".$hashed_password."')";
-							$result2 = $con->query($moderatorQuery);
+							if ($input_error == false)
+              {
+                //Insert new user into the database
+							  $moderatorQuery = "insert into Moderator(email,username,password) values('".$email."','".$username."','".$hashed_password."')";
+							  $result2 = $con->query($moderatorQuery);
 			
-							if ($result2)
-							{
-								echo "<div class='success'><p>New moderator successfully registered.</p></div>";
-							}
-							//Otherwise, display an error message
-							else
-							{
-								echo '<div class="error"><p>Error in database query.</p></div>';
-							}
+							  if ($result2)
+							  {
+								  echo "<div class='success'><p>New moderator successfully registered.</p></div>";
+							  }
+							  //Otherwise, display an error message
+							  else
+							  {
+								  echo '<div class="error"><p>Error in database query.</p></div>';
+							  }
+              }
 						}
 						else
 						{
@@ -106,4 +135,4 @@
 			<button class="form-button" type="submit" name="register" value="register">Register</button>
 		</form>
 	</body>
-</html>	
+</html>
