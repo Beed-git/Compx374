@@ -107,7 +107,7 @@
 		      {
 			      $artist_row = $id_result->fetch();
 			      
-			      $query = "insert into Media(media_url,name,description,artist_id) values('".$media_url."','".$name."','".$description."','".$artist_row['artist_id']."')";
+			      $query = "insert into Media(media_url,name,description,artist_id) values('".$fileDestination."','".$name."','".$description."','".$artist_row['artist_id']."')";
 			      $result = $con->query($query);
 			
 			      if ($result)
