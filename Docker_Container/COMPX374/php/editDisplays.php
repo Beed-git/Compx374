@@ -20,6 +20,13 @@
 			let getDisplays = () => {
 				fetch("getDisplays.php", {method: 'post'}).then(response => response.text()).then(displayResults);
 			}
+      
+			//Delete the display
+			let deleteDisplay = (display_id) => {
+				if (confirm("Are you sure you want to permanently delete this display?")) {
+					fetch("deleteDisplay.php", {method: 'post', body: display_id}).then(response => response.text()).then(displayResults);
+				}
+			}
 			
 			//Display the results
 			let displayResults = (response) => {
@@ -37,4 +44,4 @@
 		</div>
 		<div id="displays"></div>
 	</body>
-</html>	
+</html>
