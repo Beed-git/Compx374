@@ -20,12 +20,39 @@
 		<link href="../css/tuakiri.css" rel="stylesheet" type="text/css">	
 		<script>
 			let confirmCompCreation = () => {
-					if (confirm("If you choose to continue, this competition will become the current competition. Do you want to proceed?")) {
-					dataArray = {name:"<?php echo $_POST['name'];?>", description:"<?php echo $_POST['description'];?>"};
-					data = JSON.stringify(dataArray);
+					//Retrieve the competition info from the text boxes
+          var name = document.getElementById("name").value;
+          var description = document.getElementById("description").value;
+          
+          //Check that input has been entered into both input boxes
+          if (name != "" && description != "")
+          {
+            //Clear away any error messages
+            document.getElementById("confirmCompCreationMessage").innerHTML = "";
+             
+            if (confirm("If you choose to continue, this competition will become the current competition. Do you want to proceed?"))
+            {
+              dataArray = {name:name, description:description};
+				      data = JSON.stringify(dataArray);
 				
-					fetch("createCompetition.php", {method: 'post', body: data}).then(response => response.text()).then(displayResults);
-				}
+              fetch("createCompetition.php", {method: 'post', body: data}).then(response => response.text()).then(displayResults);
+            }
+          }
+          else
+          {
+            //Clear away any previous messages
+            document.getElementById("confirmCompCreationMessage").innerHTML = "";
+            
+            //Create and display an error message
+            var divElement = document.createElement('div');
+            divElement.setAttribute('class', 'error');
+          
+            var pElement = document.createElement('p');
+            pElement.innerHTML = 'All of the fields must have at least some input';
+          
+            divElement.appendChild(pElement);
+            document.getElementById("confirmCompCreationMessage").appendChild(divElement);
+          }
 			}
 			
 			//Display the results
@@ -60,4 +87,4 @@
 			<button class='form-button' type="button" name="submit" value="submit" onclick="confirmCompCreation()">Submit</button>
 		</form>		
 	</body>
-</html>	
+</html>
