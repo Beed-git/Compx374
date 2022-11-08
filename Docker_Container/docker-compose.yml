@@ -9,71 +9,56 @@ services:
       dockerfile: php.Dockerfile   #path to Dockerfile
     #image: php:7.3.2-fpm
     ports:
-    #  - "31337:9000"
-      #- "9000"
       - "9000"
       # in the form "outward-facing(host):internal(container)"
     volumes:
-      #- ./COMPX374/index.php:/var/www/html/index.php
-      #- ./COMPX374/php:/var/www/html/php
       - ./info.php:/var/www/html/info.php
       - ./COMPX374:/var/www/html/
       - images:/var/www/html/images/    #for now just gonna put it in images raw
     restart: unless-stopped
 
-  web_nginx:   #So this is like the web host or whatever? My brain tired
+  web_nginx:
     image: nginx:latest
     ports:
-    #  - "31337:4003"     #Gibraltar switch these two lines (comment/uncomment)
-      - "4003"  #This is the container port being exposed. automatically allocated?
+    #  - "31337:4003"
+      - "4003"  #This is the container port being exposed
     depends_on:
       - php
     links:
       - php
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/nginx.conf
-      #- ./COMPX374/index.php:/var/www/html/index.php
-      #- ./COMPX374/php:/var/www/html/php
       - ./info.php:/var/www/html/info.php
       - ./COMPX374:/var/www/html/
       - images:/var/www/html/images/
       # in the form: hostPath:containerPath:mode
       #   where mode is read-only or read-write and I don't fully understand what this references, while it is also not compulsory
-    networks:                                   #}
-      - caddy                                   #}Gibraltar
+    networks:
+      - caddy
       - default
-    #labels:                                     #}These 4 lines
-    #  caddy: tuakiri.trex-sandwich.com
-      #caddy.reverse_proxy: "{{upstreams 4003}}" #}
-    #  caddy.reverse_proxy: "web_nginx:4003"
     #restart: on-failure
     restart: unless-stopped
 
   api:
     build: ./WebAPI
-    ports:           #}Gibraltar
-    #  - "443:4004"   #}These 2
+    ports:
+    #  - "443:4004"
       - "4004"
     networks:
       - caddy
     labels:
-      caddy: tuakiri.trex-sandwich.com  #I don't think api.tuakiri.t... is an option btw
+      caddy: tuakiri.trex-sandwich.com
       caddy.0_handle_path: /api/*
       #caddy.reverse_proxy: "{{upstreams 4004}}"
       # Just a note: upstreams is a template that returns the addresses of all current Docker resources. should work, might be better, but I had some issues
       caddy.0_handle_path.reverse_proxy: "api:4004"
-      #Why won't you recognise my changes git?
       caddy.1_handle: /*
       caddy.1_handle.reverse_proxy: "web_nginx:4003"
     restart: unless-stopped
 
-  #Gibraltar. This whole service
   caddy:
     image: lucaslorentz/caddy-docker-proxy:ci-alpine
     #image: caddy:2.6.2  #This is the official docker one
-    #build:
-    #  context:  .
-    #  dockerfile: caddy.Dockerfile
     depends_on:
       - api
       - web_nginx
@@ -85,7 +70,7 @@ services:
       - CADDY_INGRESS_NETWORKS=caddy
     networks:
       - caddy
-    volumes:  #Gotta actually get these
+    volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       #- $PWD/Caddyfile:/etc/caddy/Caddyfile
       #- $PWD/site:/srv   #https://caddyserver.com/docs/running#docker-compose
@@ -93,7 +78,6 @@ services:
       #- caddy_config:/config
     restart: unless-stopped
 
-# Gibraltar. All these networks and volumes
 networks:
   caddy:
     external: true

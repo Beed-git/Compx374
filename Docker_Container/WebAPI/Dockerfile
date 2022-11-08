@@ -22,7 +22,8 @@ COPY . .
 #This is the internal port server.js is currently set up to listen on
 ENV PORT=4004
 
-#
-#EXPOSE 3000
+# Expose port/s
 EXPOSE 4004
+
+# Start node :)
 CMD [ "node", "server.js" ]
