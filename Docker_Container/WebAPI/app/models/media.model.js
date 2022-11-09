@@ -40,7 +40,7 @@ const getMediaByArtist = async function(id) {
 }
 
 const getMediaByDisplay = async function(id) {
-    const res = await query("select * from Media where media_id = (select media_id from Media_Instance where minstance_id = (select minstance_id from Display_Contains where display_id = (select * from Display)))")
+    const res = await query("select * from Media where media_id = (select media_id from Media_Instance where minstance_id = (select minstance_id from Display_Contains where display_id = (select display_id from Display)))")
     let media = [];
     res.forEach((row) => {
         media.push(Media(row));

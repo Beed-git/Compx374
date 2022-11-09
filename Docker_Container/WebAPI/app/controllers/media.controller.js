@@ -61,7 +61,7 @@ const getMediaByDisplay = async function (req, res, display_id) {
             console.log(err);
             res.sendStatus(500);
         }
-    })
+    }
 }
 
 module.exports = {
