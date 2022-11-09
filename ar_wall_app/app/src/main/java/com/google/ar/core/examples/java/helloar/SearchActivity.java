@@ -39,6 +39,7 @@ public class SearchActivity extends AppCompatActivity{
 
             ArrayList<Display> displays = WebApiThread.getInstance().get("https://tuakiri.trex-sandwich.com/api/displays", DisplayCollection.class).get().displays;
 
+
             String[] textViewNames = {"Dragon", "Dragaon + People", "Another Dragon", "Yet Another Dragon", "Too many Dragons"};// "Yup that's enough"};
 //            ImageButton imageButton;
 //            TextView textView;

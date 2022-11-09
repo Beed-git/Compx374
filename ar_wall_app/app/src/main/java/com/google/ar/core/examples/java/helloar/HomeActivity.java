@@ -51,6 +51,7 @@ public class HomeActivity extends AppCompatActivity {
 
     public void mainDisplay(View v) {
         Intent intent = new Intent(this, HelloArActivity.class);
+        intent.putExtra("url", "https://image.shutterstock.com/image-illustration/huge-medieval-snake-glowing-green-600w-1638992110.jpg");
         startActivity(intent);
     }
 
