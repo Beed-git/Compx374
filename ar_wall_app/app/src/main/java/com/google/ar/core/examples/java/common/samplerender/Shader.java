@@ -399,6 +399,7 @@ public class Shader implements Closeable {
     }
     GLES30.glUseProgram(programId);
     GLError.maybeThrowGLException("Failed to use shader program", "glUseProgram");
+//    GLES30.glDisable(GLES30.GL_DEPTH_TEST);
     GLES30.glBlendFuncSeparate(
         sourceRgbBlend.glesEnum,
         destRgbBlend.glesEnum,

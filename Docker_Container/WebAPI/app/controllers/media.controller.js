@@ -3,6 +3,8 @@ const Media = require("../models/media.model");
 const getMediaQuery = async function(req, res) {
     if (req.query.artist_id) {
         await getMediaByArtist(req, res, req.query.artist_id);
+    } else if (req.query.display_id) {
+        await getMediaByDisplay(req, res, req.query.display_id);
     } else {
         getMedia(req, res);
     }
@@ -43,6 +45,18 @@ const getMediaByArtist = async function (req, res, artist_id) {
         try {
             const media = await Media.getMediaByArtist(artist_id);
             res.status(200).json({ media: media });
+        } catch (err) {
+            console.log(err);
+            res.sendStatus(500);
+        }
+    }
+}
+
+const getMediaByDisplay = async function (req, res, display_id) {
+    if (!isNaN(req.params.id)) {
+        try {
+            const media = await Media.getMediaByDisplay(display_id);
+            res.status(200).json({media: media});
         } catch (err) {
             console.log(err);
             res.sendStatus(500);
