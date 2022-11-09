@@ -21,6 +21,12 @@ import java.util.ArrayList;
 
 public class SearchActivity extends AppCompatActivity{
 
+    private String[] imageNames = {"https://image.shutterstock.com/image-illustration/huge-medieval-snake-glowing-green-600w-1638992110.jpg",
+            "https://www.belloflostsouls.net/wp-content/uploads/2021/12/icespire-header.jpg",
+            "https://image.shutterstock.com/image-illustration/red-dragon-blue-magic-swirling-260nw-1124418902.jpg",
+            "https://image.shutterstock.com/image-illustration/adventurer-came-across-golden-dragon-600w-1981678550.jpg",
+            "https://image.shutterstock.com/image-photo/dungeons-dragons-scene-made-miniatures-600w-1090759115.jpg"};
+            //"https://tuakiri.trex-sandwich.com/images/"};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,12 +36,6 @@ public class SearchActivity extends AppCompatActivity{
         try{
 
             //String[] imageNames = {"https://tuakiri.trex-sandwich.com/images/login-background.jpg", "https://tuakiri.trex-sandwich.com/images/example-mural.jpg"};
-            String[] imageNames = {"https://image.shutterstock.com/image-illustration/huge-medieval-snake-glowing-green-600w-1638992110.jpg",
-                     "https://www.belloflostsouls.net/wp-content/uploads/2021/12/icespire-header.jpg",
-                    "https://image.shutterstock.com/image-illustration/red-dragon-blue-magic-swirling-260nw-1124418902.jpg",
-                    "https://image.shutterstock.com/image-illustration/adventurer-came-across-golden-dragon-600w-1981678550.jpg",
-                    "https://image.shutterstock.com/image-photo/dungeons-dragons-scene-made-miniatures-600w-1090759115.jpg"};
-                    //"https://tuakiri.trex-sandwich.com/images/"};
 
             ArrayList<Display> displays = WebApiThread.getInstance().get("https://tuakiri.trex-sandwich.com/api/displays", DisplayCollection.class).get().displays;
 
@@ -181,6 +181,7 @@ public class SearchActivity extends AppCompatActivity{
     public void startAR(int id){
         Intent intent = new Intent(this, HelloArActivity.class);
         intent.putExtra("ID", id);
+        intent.putExtra("url", imageNames[id]);
         startActivity(intent);
     }
 
