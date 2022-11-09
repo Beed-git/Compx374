@@ -62,7 +62,6 @@ import com.google.ar.core.examples.java.common.helpers.InstantPlacementSettings;
 import com.google.ar.core.examples.java.common.helpers.SnackbarHelper;
 import com.google.ar.core.examples.java.common.helpers.TapHelper;
 import com.google.ar.core.examples.java.common.helpers.TrackingStateHelper;
-import com.google.ar.core.examples.java.common.rendering.AnimatedTexture;
 import com.google.ar.core.examples.java.common.rendering.ImageBuffer;
 import com.google.ar.core.examples.java.common.rendering.ImageTexture;
 import com.google.ar.core.examples.java.common.samplerender.Framebuffer;
@@ -75,7 +74,6 @@ import com.google.ar.core.examples.java.common.samplerender.arcore.BackgroundRen
 import com.google.ar.core.examples.java.common.samplerender.arcore.PlaneRenderer;
 import com.google.ar.core.examples.java.common.samplerender.arcore.SpecularCubemapFilter;
 import com.google.ar.core.examples.java.webapi.WebApiThread;
-import com.google.ar.core.examples.java.webapi.models.*;
 import com.google.ar.core.exceptions.CameraNotAvailableException;
 import com.google.ar.core.exceptions.NotYetAvailableException;
 import com.google.ar.core.exceptions.UnavailableApkTooOldException;
@@ -87,10 +85,8 @@ import com.google.ar.core.exceptions.UnavailableUserDeclinedInstallationExceptio
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.Future;
 
@@ -101,15 +97,12 @@ import java.util.concurrent.Future;
  */
 public class HelloArActivity extends AppCompatActivity implements SampleRender.Renderer {
   private int displayId = 61;
-  //private static final String IMAGE_URL = "https://i.imgur.com/Mbi3wti.jpeg";
-  //private static final String IMAGE_URL = "https://i.pinimg.com/originals/ca/a9/df/caa9df0ae36595e7d4b9961596adc218.png";
   private static final String IMAGE_URL = "https://tuakiri.trex-sandwich.com/images/63575459d65fe.png";
 
   private static final String TAG = HelloArActivity.class.getSimpleName();
 
   private static final String SEARCHING_PLANE_MESSAGE = "Searching for surfaces...";
-  private static final String SEARCHING_FOR_TOP_RIGHT_MESSAGE = "Searching for top right marker...";
-  private static final String SEARCHING_FOR_BOTTOM_LEFT_MESSAGE = "Searching for bottom left marker...";
+  private static final String SEARCHING_MURAL_MESSAGE = "Searching for mural";
 
   // See the definition of updateSphericalHarmonicsCoefficients for an explanation of these
   // constants.
@@ -178,7 +171,6 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
   private SpecularCubemapFilter cubemapFilter;
 
   private Pose firstPointPose = null;
-  private Pose secondPointPose = null;
 
   // Temporary matrix allocated here to reduce number of allocations for each frame.
   private final float[] scaleMatrix = new float[16];
@@ -191,7 +183,10 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
   private final float[] viewInverseMatrix = new float[16];
   private final float[] worldLightDirection = {0.0f, 0.0f, 0.0f, 0.0f};
   private final float[] viewLightDirection = new float[4]; // view x world light direction
-  
+
+  private final float height = 2.40f;
+  private final float width = 2.90f;
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -273,9 +268,9 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
         }
 
         // Create the session.
-        session = new Session(/* context= */ this);
+        session = new Session(this);
 
-        try (InputStream stream = this.getAssets().open("models/markers.imgdb")) {
+        try (InputStream stream = this.getAssets().open("models/out.imgdb")) {
           imageDatabase = AugmentedImageDatabase.deserialize(session, stream);
         } catch (IOException ex) {
           messageSnackbarHelper.showMessage(this, ex.getMessage());
@@ -364,6 +359,10 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
     // Prepare the rendering objects. This involves reading shaders and 3D model files, so may throw
     // an IOException.
     try {
+//      // Enable transparency.
+//      GLES30.glEnable(GLES30.GL_BLEND);
+//      GLES30.glBlendFunc(GLES30.GL_SRC_ALPHA, GLES30.GL_ONE_MINUS_SRC_ALPHA);
+
       backgroundRenderer = new BackgroundRenderer(render);
       virtualSceneFramebuffer = new Framebuffer(render, /*width=*/ 1, /*height=*/ 1);
 
@@ -528,9 +527,7 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
       }
     } else if (hasTrackingPlane()) {
       if (firstPointPose == null) {
-        message = SEARCHING_FOR_TOP_RIGHT_MESSAGE;
-      } else if (secondPointPose == null) {
-        message = SEARCHING_FOR_BOTTOM_LEFT_MESSAGE;
+        message = SEARCHING_MURAL_MESSAGE;
       }
     } else {
       message = SEARCHING_PLANE_MESSAGE;
@@ -571,10 +568,8 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
     render.clear(virtualSceneFramebuffer, 0f, 0f, 0f, 0f);
 
     this.firstPointPose = null;
-    this.secondPointPose = null;
 
     Collection<AugmentedImage> augmentedImages = frame.getUpdatedTrackables(AugmentedImage.class);
-    System.out.println(augmentedImages.size());
     for (AugmentedImage image : augmentedImages) {
       System.out.println(image.getName());
       if (image.getTrackingState() == TrackingState.TRACKING) {
@@ -582,29 +577,30 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
             image.getTrackingMethod() == AugmentedImage.TrackingMethod.LAST_KNOWN_POSE) {
           if (image.getIndex() == 0) {
             firstPointPose = image.getCenterPose();
-          } else if (image.getIndex() == 1) {
-            secondPointPose = image.getCenterPose();
           }
         }
       }
     }
 
-    if (firstPointPose != null && secondPointPose != null) {
-      Pose pose = Pose.makeInterpolated(firstPointPose, secondPointPose, 0.5f);
-
+    if (firstPointPose != null) {
       // Get the current pose of an Anchor in world space. The Anchor pose is updated
       // during calls to session.update() as ARCore refines its estimate of the world.
-      pose.toMatrix(modelMatrix, 0);
+      firstPointPose.toMatrix(modelMatrix, 0);
 
-      float xDist = Math.abs(firstPointPose.tx() - secondPointPose.tx());
-      float zDist = Math.abs(firstPointPose.tz() - secondPointPose.tz());
+      float imageAspectRatio = downloadedImageTexture.getWidth() / downloadedImageTexture.getHeight();
 
-      float xScale = (float)Math.sqrt(xDist * xDist + zDist * zDist);
-      float yScale = Math.abs(firstPointPose.ty() - secondPointPose.ty());
+      float w = this.width;
+      float h = this.height;
 
-      Matrix.rotateM(modelMatrix, 0, 90, 0, 1, 0);
+      if (imageAspectRatio > 1.0f) {
+        h = this.height / imageAspectRatio;
+      } else {
+        w = this.width / (downloadedImageTexture.getHeight() / downloadedImageTexture.getWidth() );
+      }
+
+      //Matrix.rotateM(modelMatrix, 0, 90, 0, 1, 0);
       //Curious if this scales relative to the image's dimensions or
-      Matrix.scaleM(modelMatrix, 0, xScale, yScale, 1.0f );
+      Matrix.scaleM(modelMatrix, 0, w, 1.0f, h);
 
       // Calculate model/view/projection matrices
       Matrix.multiplyMM(modelViewMatrix, 0, viewMatrix, 0, modelMatrix, 0);
@@ -613,15 +609,6 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
       // Update shader properties and draw
       virtualObjectShader.setMat4("u_ModelView", modelViewMatrix);
       virtualObjectShader.setMat4("u_ModelViewProjection", modelViewProjectionMatrix);
-
-//      if (virtualObjectAnimatedTexture != null) {
-//        virtualObjectAnimatedTexture.nextFrame();
-//      }
-
-//      virtualObjectShader.setTexture("u_AlbedoTexture", virtualObjectAnimatedTexture);
-
-//      virtualObjectShader.setTexture("u_AlbedoTexture", downloadedImageTexture);
-//      render.draw(virtualObjectMesh, virtualObjectShader, virtualSceneFramebuffer);
 
       // Test image.
       if (downloadedImageTexture != null) {
