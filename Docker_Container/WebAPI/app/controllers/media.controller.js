@@ -41,7 +41,7 @@ const getMediaById = async function(req, res) {
 }
 
 const getMediaByArtist = async function (req, res, artist_id) {
-    if (!isNaN(req.params.id)) {
+    if (!isNaN(artist_id)) {
         try {
             const media = await Media.getMediaByArtist(artist_id);
             res.status(200).json({ media: media });
@@ -53,7 +53,7 @@ const getMediaByArtist = async function (req, res, artist_id) {
 }
 
 const getMediaByDisplay = async function (req, res, display_id) {
-    if (!isNaN(req.params.id)) {
+    if (!isNaN(display_id)) {
         try {
             const media = await Media.getMediaByDisplay(display_id);
             res.status(200).json({media: media});
