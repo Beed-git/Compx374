@@ -96,9 +96,6 @@ import java.util.concurrent.Future;
  * plane to place a 3D model.
  */
 public class HelloArActivity extends AppCompatActivity implements SampleRender.Renderer {
-  private int displayId = 61;
-  private static final String IMAGE_URL = "https://tuakiri.trex-sandwich.com/images/63575459d65fe.png";
-
   private static final String TAG = HelloArActivity.class.getSimpleName();
 
   private static final String SEARCHING_PLANE_MESSAGE = "Searching for surfaces...";
@@ -411,7 +408,8 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
 
       //URL url = new URL("https://commons.wikimedia.org/wiki/Earth#/media/File:The_Blue_Marble_(remastered).jpg");
       try {
-        Future<Bitmap> bitmap = WebApiThread.getInstance().getImageFromURL(IMAGE_URL);
+        String  url = getIntent().getStringExtra("url");
+        Future<Bitmap> bitmap = WebApiThread.getInstance().getImageFromURL(url);
         ImageBuffer imageBuffer = ImageBuffer.fromBitmap(bitmap.get());
         downloadedImageTexture = ImageTexture.createFromBuffer(imageBuffer);
       } catch (Exception ex) {

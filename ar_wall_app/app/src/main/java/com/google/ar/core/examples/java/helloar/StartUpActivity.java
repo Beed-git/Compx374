@@ -35,6 +35,8 @@ public class StartUpActivity extends Activity {
         email                   = findViewById(R.id.editTextTextEmailAddress);
         password                = findViewById(R.id.editTextTextPassword);
 
+        buttonRegister.setEnabled(false);
+
         buttonForgotPassword.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 AlertDialog.Builder alert = new AlertDialog.Builder(StartUpActivity.this);

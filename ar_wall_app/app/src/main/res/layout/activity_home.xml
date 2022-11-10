@@ -66,12 +66,12 @@
             android:id="@+id/imageButtonGallery"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            app:srcCompat="@drawable/gallery_icon"
-            android:background="@null"
-            android:scaleType="fitCenter"
             android:layout_margin="10dp"
-            android:onClick="galleryButton"/>
+            android:layout_weight="1"
+            android:background="@null"
+            android:onClick="galleryButton"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/gallery_icon" />
 
         <ImageButton
             android:id="@+id/imageButtonSettings"

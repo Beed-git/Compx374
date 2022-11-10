@@ -72,12 +72,12 @@ public class SearchActivity extends AppCompatActivity{
                 }
             }
             else {
-                System.out.println("Mismatch between display size and image size");
+                System.out.println("Mismatch between number of displays and number of images");
                 // TODO: fallback.
             }
 
             //Generating all views for number of images found on server (hard coded for now).
-            for(int i = 0; i< textViewNames.size(); i+=2){
+            for(int i = 0; i < textViewNames.size(); i+=2){
                 //Getting parent
                 LinearLayout parent = findViewById(R.id.parent);
                 //Creating linear layouts

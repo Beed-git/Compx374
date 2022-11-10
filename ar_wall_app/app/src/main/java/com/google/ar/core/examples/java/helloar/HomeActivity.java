@@ -5,8 +5,21 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
+import android.widget.Toast;
 import android.widget.ToggleButton;
+
+import com.google.ar.core.examples.java.webapi.WebApiThread;
+import com.google.ar.core.examples.java.webapi.models.Competition;
+import com.google.ar.core.examples.java.webapi.models.CompetitionRoot;
+import com.google.ar.core.examples.java.webapi.models.Display;
+import com.google.ar.core.examples.java.webapi.models.DisplayCollection;
+import com.google.ar.core.examples.java.webapi.models.Media;
+import com.google.ar.core.examples.java.webapi.models.MediaRoot;
+
+import java.util.ArrayList;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -16,6 +29,9 @@ public class HomeActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        ImageButton galleryButton = findViewById(R.id.imageButtonGallery);
+        galleryButton.setEnabled(false);
 
         ToggleButton toggleLike = findViewById(R.id.toggleButtonVoteLike);
         ToggleButton toggleDislike = findViewById(R.id.toggleButtonVoteDislike);
@@ -50,9 +66,26 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     public void mainDisplay(View v) {
-        Intent intent = new Intent(this, HelloArActivity.class);
-        intent.putExtra("url", "https://image.shutterstock.com/image-illustration/huge-medieval-snake-glowing-green-600w-1638992110.jpg");
-        startActivity(intent);
+        try {
+            Intent intent = new Intent(this, HelloArActivity.class);
+            Competition c = WebApiThread.getInstance().get("https://tuakiri.trex-sandwich.com/api/competitions/?location=anywhere", CompetitionRoot.class).get().competition;
+            ArrayList<Display> displays = WebApiThread.getInstance().get("https://tuakiri.trex-sandwich.com/api/displays", DisplayCollection.class).get().displays;
+            for (Display d : displays)
+            {
+                if (d.competitionId == c.id) {
+                    Media m = WebApiThread.getInstance().get("https://tuakiri.trex-sandwich.com/api/media/?display_id=" + d.id, MediaRoot.class).get().media;
+                    String url = "https://tuakiri.trex-sandwich.com/" + m.url.substring(3);
+                    intent.putExtra("url", url);
+                    startActivity(intent);
+                    return;
+                }
+            }
+            throw new Exception("Failed to find competition.");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Toast t = Toast.makeText(this, "Failed to find a display for the current competition.\n" + ex.toString(), Toast.LENGTH_LONG);
+            t.show();
+        }
     }
 
     public void searchButton(View v) {
