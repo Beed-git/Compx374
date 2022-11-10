@@ -53,4 +53,5 @@ module.exports = {
     getAllMedia,
     getMediaById,
     getMediaByArtist,
+    getMediaByDisplay,
 };
