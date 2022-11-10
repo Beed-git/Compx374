@@ -44,6 +44,7 @@ const getArtistByEmail = async function(email) {
 }
 
 const createArtist = async function(artist) {
+    console.log(db.format("insert into Artist(email, username, password) values (?, ?, ?)", [artist.email, artist.username, artist.password]));
     const res = await query (db.format("insert into Artist(email, username, password) values (?, ?, ?)", [artist.email, artist.username, artist.password]));
     return res.insertId;
 }

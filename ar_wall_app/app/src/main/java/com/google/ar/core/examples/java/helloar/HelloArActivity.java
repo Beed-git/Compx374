@@ -571,7 +571,6 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
 
     Collection<AugmentedImage> augmentedImages = frame.getUpdatedTrackables(AugmentedImage.class);
     for (AugmentedImage image : augmentedImages) {
-      System.out.println(image.getName());
       if (image.getTrackingState() == TrackingState.TRACKING) {
         if (image.getTrackingMethod() == AugmentedImage.TrackingMethod.FULL_TRACKING ||
             image.getTrackingMethod() == AugmentedImage.TrackingMethod.LAST_KNOWN_POSE) {
