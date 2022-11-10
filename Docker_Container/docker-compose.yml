@@ -1,5 +1,6 @@
 #Apparently no longer ideal to define a version
-
+#I take it back, when using swarm it wants to to define one or else it assumes you're in v1
+version: "3.9"
 # Yooo secrets are the thing to hide login data
 
 services:
