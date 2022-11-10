@@ -67,9 +67,6 @@ public class SearchActivity extends AppCompatActivity{
                 for (int i = 0; i < size; i++) {
                     Media m = media.get(i);
                     String url = "https://tuakiri.trex-sandwich.com/" + m.url.substring(3);
-                    if (!url.substring(m.url.length() - 4).startsWith(".")) {
-                        url += ".png";
-                    }
                     System.out.println(url);
                     imageNames.add(url);
                 }
