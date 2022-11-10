@@ -1,6 +1,7 @@
 #Apparently no longer ideal to define a version
 #I take it back, when using swarm it wants to to define one or else it assumes you're in v1
-version: "3.9"
+#version: "3.9"
+#However, not going to bother with swarm and secrets any more
 # Yooo secrets are the thing to hide login data
 
 services:
@@ -16,8 +17,8 @@ services:
       - ./info.php:/var/www/html/info.php
       - ./COMPX374:/var/www/html/
       - images:/var/www/html/images/    #for now just gonna put it in images raw
-    secrets:
-      - db_secret_1
+    #secrets:
+    #  - db_secret_1
     restart: unless-stopped
 
   web_nginx:
@@ -89,8 +90,4 @@ volumes:
   caddy_data: {}
   #Will we need a volume for uploading images? It should be external.
   images:
-    external: true
-
-secrets:
-  db_secret_1:
     external: true
