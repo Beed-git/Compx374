@@ -19,6 +19,9 @@ services:
       - images:/var/www/html/images/    #for now just gonna put it in images raw
     #secrets:
     #  - db_secret_1
+    env_file:
+      - db-variables.env
+      #This will just be manually created on the host for now, for security reasons
     restart: unless-stopped
 
   web_nginx:

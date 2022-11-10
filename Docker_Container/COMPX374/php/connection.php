@@ -1,7 +1,11 @@
 <?php
 	try
 	{
-		$con = new PDO('mysql:host=db.trex-sandwich.com;dbname=team_echo','team_echo','cane-reproach-sudden-undergrad');
+		$db1 = getenv(DB_1);
+		$db2 = getenv(DB_2);
+		$db3 = getenv(DB_3);
+
+		$con = new PDO($db1, $db2, $db3);
    	}
 	catch (PDOException $e)
 	{
